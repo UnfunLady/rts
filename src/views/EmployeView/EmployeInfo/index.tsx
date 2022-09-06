@@ -1,11 +1,23 @@
 import React, { FC, useState, useEffect, useRef } from 'react';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { columns, employeInfoDataInit, getEmploye, getAllDept, getGroup } from '../../../type/employeInfo'
-import { Card, Select, Form, Button, Table, Input, Empty, Pagination, Modal } from 'antd';
+import { Card, Select, Form, Button, Table, Input, Empty, Pagination, Modal, Radio, DatePicker } from 'antd';
 import './index.less'
+import moment from 'moment';
 const EmployeInfo: FC = () => {
     // 初始化数据
     const [data, setData] = useState(new employeInfoDataInit())
+    // 修改或添加员工model open
+    const [open, setOpen] = useState(true);
+    const showModal = () => {
+        setOpen(true);
+    };
+    const hideModal = () => {
+        setOpen(false);
+    };
+    // 日期格式
+    const dateFormat = 'YYYY/MM/DD';
+    // form的标签
     const selectForm: any = useRef()
     useEffect(() => {
         // 获取全部部门的方法
@@ -66,8 +78,6 @@ const EmployeInfo: FC = () => {
                     </Form.Item>
                 </Form>
             </Card >
-
-
             <Card style={{ marginTop: "20px", boxShadow: "0px 0px 12px rgba(0, 0, 0, 0.09)", display: data.initData.employeInfo.length > 0 ? "block" : 'none' }}>
                 <div>
                     <Button size='large' style={{ marginBottom: '15px', borderRadius: '3px' }} type="primary" icon={<PlusOutlined />} onClick={addOrUpdateEmploye}>
@@ -99,6 +109,37 @@ const EmployeInfo: FC = () => {
                 }
             >
             </Empty>
+
+            {/* 添加或修改员工 */}
+            <Modal
+                title={data.initData.isUpdate ? "修改员工" : "添加员工"}
+                open={open}
+                width={800}
+                onOk={hideModal}
+                onCancel={hideModal}
+                okText={data.initData.isUpdate ? "确认修改" : "确认添加"}
+                cancelText="取消操作"
+                okButtonProps={{ icon: <CheckOutlined /> }}
+                cancelButtonProps={{ icon: <CloseOutlined /> }}
+            >
+                <div>
+                    <Form labelCol={{ span: 3 }} size="large" wrapperCol={{ span: 16 }} name='basic1' labelAlign='right'>
+                        <Form.Item label="姓名">
+                            <Input placeholder='请输入员工姓名' size='large' style={{ width: 320 }} />
+                        </Form.Item>
+                        <Form.Item label="性别">
+                            <Radio.Group value={1}>
+                                <Radio value={1}>男</Radio>
+                                <Radio value={2}>女</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        <Form.Item label="入职日期">
+                            <DatePicker size='large' style={{ width: 250 }} defaultValue={moment('2022/01/01', dateFormat)} format={dateFormat} />
+                        </Form.Item>
+
+                    </Form>
+                </div>
+            </Modal >
         </div >
     );
 }
