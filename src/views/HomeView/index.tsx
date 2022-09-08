@@ -38,9 +38,9 @@ const MainView = (props: Props) => {
         }
         data.mainViewData.defaultPath = activePath
         setData({ ...data })
+        console.log(data.mainViewData.defaultPath);
+
     }, [])
-
-
 
     // 修改合并阀门 控制菜单是否合并
     const changeClose = () => {
@@ -49,8 +49,11 @@ const MainView = (props: Props) => {
     }
     // 跳转路由
     const onClick: MenuProps['onClick'] = e => {
-        // navitage(e.key)
+        // 修改默认选中菜单
+        data.mainViewData.defaultPath = e.keyPath
+        setData({ ...data })
         if (e.keyPath.length > 1) {
+            // 如果是二级以上菜单
             const to = e.keyPath[e.keyPath.length - 1] + '/' + e.key;
             navitage(to)
         } else {
@@ -58,16 +61,21 @@ const MainView = (props: Props) => {
             navitage(to)
         }
     };
+    const onOpenChange = (openKeys: string[]) => {
+        data.mainViewData.OpenKeys = openKeys
+        setData({ ...data })
+    }
 
     return (
         <Layout>
             <Sider collapsed={data.mainViewData.isClose}>
                 <Menu
                     onClick={onClick}
-                    defaultSelectedKeys={data.mainViewData.defaultPath}
-                    defaultOpenKeys={data.mainViewData.OpenKeys}
+                    selectedKeys={data.mainViewData.defaultPath}
+                    openKeys={data.mainViewData.OpenKeys}
                     mode="inline"
                     theme="dark"
+                    onOpenChange={onOpenChange}
                     items={data.mainViewData.menuList}
                 >
                 </Menu>

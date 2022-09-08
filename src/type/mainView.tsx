@@ -1,5 +1,4 @@
 import type { MenuProps } from 'antd';
-import routes from '../router'
 type MenuItem = Required<MenuProps>['items'][number];
 export interface mainViewData {
     menuList: [],
@@ -26,7 +25,6 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
         key, icon, children, label, type,
     } as MenuItem;
 }
-
 export const getMenuNodes = (menuList: MenuItem[]) => {
     // console.log('mlist', menuList);
     var finalResult: any = []
@@ -57,6 +55,7 @@ export const getMenuNodes = (menuList: MenuItem[]) => {
             if (item.show) {
                 // console.log('item.show', item);
             }
+
             return (
                 item.show ?
                     getItem(item.title, item.path, item.icon) : null

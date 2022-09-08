@@ -1,7 +1,8 @@
-import type { ColumnsType } from 'antd/es/table';
+
 import { employe } from '../api';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+
 import { message, Select, Button } from 'antd'
+import moment from 'moment';
 const { Option } = Select;
 export interface DataType {
     key: React.Key;
@@ -15,8 +16,8 @@ type selectType = {
 // 收集表单数据
 interface employeInfoData {
     selectForm: {
-        dno: number | string | undefined,//部门号
-        deptId: number | string | undefined,//部门团队id
+        dno: number | string,//部门号
+        deptId: number | string,//部门团队id
         page: number | string,
         size: number | string
     }
@@ -25,10 +26,33 @@ interface employeInfoData {
     employeInfo: selectType//根据团队号获取的全部员工信息,
     deptSelect: [],//部门选择列表
     groupSelect: [],//小组选择列表
+    provinceSelect: any,//省份选择列表
+    citySelect: any,//地市选择列表
     employeCount: number | string,//小组员工总人数
     tableDatas: DataType[],
-    isUpdate: boolean
-
+    addOrUpdateForm: {
+        employno: number,
+        dno: string | number,//部门号
+        deptno: string | number,//团队号
+        employname: string,
+        deptInfo: selectType,//所有部门信息
+        groupInfo: selectType,//根据部门号获取的所有团队
+        deptSelect: [],//部门选择列表
+        groupSelect: [],//小组选择列表
+        employage: string,
+        employsex: string,
+        employidcard: string,
+        employphone: string,
+        entryDate: string,
+        employemail: string,
+        employaddress: string,
+        employsalary: string,
+        province: string,  // 所属省（直辖市）
+        city: string,    // 所属市 
+        isUpdate: boolean,
+    },
+    provinceListAll: [],//全国的省
+    cityListAll: [],//全国地市
 }
 export class employeInfoDataInit {
     initData: employeInfoData = {
@@ -43,9 +67,34 @@ export class employeInfoDataInit {
         employeInfo: [],
         deptSelect: [],//部门选择列表
         groupSelect: [],//小组选择列表
+        provinceSelect: [],//省份选择列表
+        citySelect: [],//地市选择列表
         employeCount: 1,
         tableDatas: [],
-        isUpdate: false
+        addOrUpdateForm: {
+            employno: 0,
+            dno: 0,//部门号
+            deptno: 0,//团队号
+            employname: '',
+            deptInfo: [],//所有部门信息
+            groupInfo: [],//根据部门号获取的所有团队
+            deptSelect: [],//部门选择列表
+            groupSelect: [],//小组选择列表
+            employage: '',
+            employsex: '',
+            employidcard: '',
+            employphone: '',
+            entryDate: '',
+            employemail: '',
+            employaddress: '',
+            employsalary: '',
+            province: '',  // 所属省（直辖市）
+            city: '',     // 所属市 
+            isUpdate: false,
+        },
+        provinceListAll: [],//全国的省
+        cityListAll: [],//全国地市
+
     }
 }
 // 部门信息类型
@@ -73,74 +122,7 @@ type employeInfo = {
     deptname: string,
     dno: number | string,
 }
-// 表格行
-export const columns: ColumnsType<DataType> = [
-    {
-        title: '团队',
-        dataIndex: 'deptname',
-        align: 'center'
-    },
-    {
-        title: '员工号',
-        dataIndex: 'employno',
-        align: 'center'
-    },
-    {
-        title: '员工名',
-        dataIndex: 'employname',
-        align: 'center'
-    },
-    {
-        title: '年龄',
-        dataIndex: 'employage',
-        align: 'center'
-    },
-    {
-        title: '性别',
-        dataIndex: 'employsex',
-        align: 'center'
-    },
-    {
-        title: '身份证',
-        dataIndex: 'employidcard',
-        align: 'center'
-    },
-    {
-        title: '电话',
-        dataIndex: 'employphone',
-        align: 'center'
-    },
-    {
-        title: '入职日',
-        dataIndex: 'entryDate',
-        align: 'center'
-    },
-    {
-        title: '邮箱',
-        dataIndex: 'employemail',
-        align: 'center'
-    },
-    {
-        title: '地址',
-        dataIndex: 'employaddress',
-        align: 'center'
-    },
-    {
-        title: '薪资',
-        dataIndex: 'employsalary',
-        align: 'center'
-    },
-    {
-        title: '操作',
-        dataIndex: 'option',
-        align: 'center',
-        render: (_, record: { key: React.Key }) =>
-            <>
-                <Button style={{ height: "27px", borderRadius: "3px", border: "none", fontSize: "12px" }} type="primary" icon={<EditOutlined />} onClick={() => editEmploye(record)}>修改</Button>
-                <Button style={{ height: "27px", marginLeft: "15px", borderRadius: "3px", border: "none", fontSize: "12px" }} danger icon={<DeleteOutlined />} type='primary' >删除</Button>
-            </>
-    },
-];
+
 // 获取全部部门的方法
 export const getAllDept = async (data: employeInfoDataInit, setData: Function) => {
     const res: any = await employe.reqAllDept()
@@ -197,7 +179,97 @@ export const getEmploye = async (data: employeInfoDataInit, setData: Function) =
         message.error('请求出错请稍后重试')
     }
 }
-const editEmploye = (key: any) => {
-    console.log(key);
+// 获取全国的省市县 （返回结果大概3万行 不能暴力遍历）
+export const getAllProvinceAndCityList = (data: employeInfoDataInit, setData: Function) => {
+    employe.reqGetAllProvinceAndAllCity().then((results: any) => {
+        let res: any = results;
+        if (res.code === 200) {
+            // 省份赋值
+            data.initData.provinceListAll = res.districts[0].districts;
+            data.initData.provinceSelect = data.initData.provinceListAll.map((province: any) => {
+                return <Option key={province.name}>{province.name}</Option>
+            })
+        }
+        setData({ ...data })
+    });
+}
+// 地市赋值
+export const getCityList = (data: employeInfoDataInit, setData: Function, pname: string) => {
+    // city赋值
+    data.initData.cityListAll = data.initData.provinceListAll.filter((item: any) => item.name === pname)[0]['districts']
+    data.initData.citySelect = data.initData.cityListAll.map((city: any) => {
+        return <Option key={city.name}>{city.name}</Option>
+    })
+    setData({ ...data })
+}
+// 点击添加或修改员工 把选择部门赋值
+export const employeSelect = (data: employeInfoDataInit, setData: Function) => {
+    data.initData.addOrUpdateForm.dno = data.initData.selectForm.dno
+    data.initData.addOrUpdateForm.deptno = data.initData.selectForm.deptId
+    data.initData.addOrUpdateForm.deptInfo = data.initData.deptInfo
+    data.initData.addOrUpdateForm.groupInfo = data.initData.groupInfo;
+    setData({ ...data })
+    data.initData.addOrUpdateForm.deptSelect = data.initData.addOrUpdateForm.deptInfo.map((dept: any) => {
+        return <Option key={dept.dno}>{dept.dname}</Option>
+    })
+    data.initData.addOrUpdateForm.groupSelect = data.initData.addOrUpdateForm.groupInfo.map((group: deptOrGroupInfo) => {
+        return <Option key={group.id}>{group.deptname}</Option>
+    })
+}
+// 选择了部门后获取新的小组
+export const changeAddOrUpdateSelect = async (data: employeInfoDataInit, setData: Function) => {
+    const res: any = await employe.reqGetDeptByDno(data.initData.addOrUpdateForm)
+    if (res.code === 200) {
+        data.initData.addOrUpdateForm.groupInfo = res.groupInfo;
+        data.initData.addOrUpdateForm.groupSelect = data.initData.addOrUpdateForm.groupInfo.map((group: deptOrGroupInfo) => {
+            return <Option key={group.id}>{group.deptname}</Option>
+        })
+        setData({ ...data })
+    }
+    else {
+        message.error('请求出错请稍后重试')
+    }
+}
 
+// 添加或修改员工
+export const cofimAddOrUpdate = async (data: employeInfoDataInit) => {
+    if (data.initData.addOrUpdateForm.isUpdate) {
+        const res: any = await employe.reqAddOrUpdateEmploye({ default: data.initData.addOrUpdateForm, old: data.initData.selectForm.deptId, changeGroup: false })
+        if (res.code === 200) {
+            message.success('修改员工成功！')
+        } else {
+            message.error('修改员工失败！')
+        }
+    } else {
+        const res: any = await employe.reqAddOrUpdateEmploye({ default: data.initData.addOrUpdateForm, old: data.initData.selectForm.deptId, changeGroup: false })
+        if (res.code === 200) {
+            message.success('添加员工成功！')
+        } else {
+            message.error('添加员工失败！')
+        }
+    }
+
+}
+
+export const editEmploye = (key: any, data: employeInfoDataInit, setData: Function, setOpen: Function, addOrUpdateForm: any) => {
+    //    设置要修改的员工号
+    data.initData.addOrUpdateForm.employno = key.employno
+    setData({ ...data })
+    employeSelect(data, setData)
+    // 点击修改时筛选出默认选中的部门和团队 在form的initValues设置了
+    data.initData.addOrUpdateForm.isUpdate = true
+    addOrUpdateForm.setFieldsValue({
+        deptno: data.initData.selectForm.deptId,
+        dno: data.initData.selectForm.dno,
+        employage: key.employage,
+        employemail: key.employemail,
+        employidcard: key.employidcard,
+        employname: key.employname,
+        employphone: key.employphone,
+        employsalary: key.employsalary,
+        employsex: key.employsex,
+        entryDate: moment(key.entryDate),
+
+    })
+    setOpen(true)
 }
