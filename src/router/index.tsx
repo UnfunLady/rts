@@ -10,15 +10,35 @@ import EmployeInfo from '../views/EmployeView/EmployeInfo'
 // const EmployeView = lazy(() => import('../views/EmployeView'))
 // const EmployeInfo = lazy(() => import('../views/EmployeView/EmployeInfo'))
 
-type Route = {
-    path: string,
-    element: React.ReactNode,
-    icon?: React.ReactNode,
-    title?: string,
-    children?: Array<Route>,
-    [propName: string]: any
-}
-const routes: Array<Route> = [
+// type Route = {
+//     path: string,
+//     element: React.ReactNode,
+//     icon?: React.ReactNode,
+//     title?: string,
+//     children?: Array<Route>,
+//     [propName: string]: any
+// }
+const routes: any = [
+    //重定向
+    {
+        path: '/homeView',
+        show: false,
+        element: (
+            <>
+                <Navigate to="/homeView/mainView" />
+            </>
+        ),
+    },
+    {
+        path: '/homeView/employeView',
+        show: false,
+        element: (
+            <>
+                <Navigate to="/homeView/employeView/employeInfo" />
+            </>
+        ),
+    },
+    //------------------------------------
     {
         path: '/homeView',
         element: (
@@ -27,14 +47,16 @@ const routes: Array<Route> = [
             </>
         ),
         title: '首页',
+        breadcrumbName: '首页',
         icon: <MenuOutlined />,
         showChildren: true,
         show: true,
         children: [
             {
-                path: 'mainview',
+                path: 'mainView',
                 element: <MainView />,
                 title: '首页信息',
+                breadcrumbName: '首页信息',
                 icon: <AppstoreOutlined />,
                 show: true
             },
@@ -45,6 +67,7 @@ const routes: Array<Route> = [
                 ),
                 icon: <TeamOutlined />,
                 title: '员工菜单',
+                breadcrumbName: '员工菜单',
                 show: true,
                 children: [
                     {
@@ -52,17 +75,23 @@ const routes: Array<Route> = [
                         element: <EmployeInfo />,
                         icon: <UserOutlined />,
                         title: '员工管理',
+                        breadcrumbName: '员工管理',
                         show: true,
                     },
                 ]
             },
         ]
     },
-
     {
         path: '/',
-        element: <Navigate to="/homeView" />,
+        element: <Navigate to="/homeView/mainView" />,
         show: false
     }
 ]
+export const breadcrumbNameMap: Record<string, string> = {
+    '/homeView': '首页',
+    '/homeView/mainView': '首页信息',
+    '/homeView/employeView': '员工菜单',
+    '/homeView/employeView/employeInfo': '员工管理',
+};
 export default routes

@@ -3,13 +3,16 @@ import React, { useState, useEffect } from 'react'
 // 引入路由表
 import routes from '../../router'
 // 引入location获取路径
-import { useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { useLocation, useNavigate, Outlet, Link } from 'react-router-dom';
 import { Layout, Col, Row, Breadcrumb, Button, Menu } from 'antd';
 // 引入type数据
 import type { MenuProps } from 'antd'
 import { mainViewDataInit, getMenuNodes } from '../../type/mainView';
 import { MenuFoldOutlined, MenuUnfoldOutlined, } from '@ant-design/icons';
 import './index.less'
+import { Route } from 'antd/lib/breadcrumb/Breadcrumb';
+import { breadcrumbNameMap } from '../../router';
+
 const { Header, Sider, Content } = Layout;
 type Props = {}
 const MainView = (props: Props) => {
@@ -21,11 +24,26 @@ const MainView = (props: Props) => {
     const location = useLocation()
     const navitage = useNavigate()
     // 过滤路由表
-    const routesList = routes.filter((r) => {
+    const routesList = routes.filter((r: any) => {
         if (r.show && r.show === true) {
             return r
         }
     })
+    // 面包屑arr 
+    const breadCrumbCheck = () => {
+        const pathSnippets = location.pathname.split('/').filter((i) => i)
+        // 遍历路由对象生成面包屑
+        const extraBreadcrumbItems = pathSnippets.map((_, index) => {
+            const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+            return (
+                <Breadcrumb.Item key={url}>
+                    <Link to={url}>{breadcrumbNameMap[url]}</Link>
+                </Breadcrumb.Item>
+            );
+        })
+
+        return extraBreadcrumbItems
+    }
     useEffect(() => {
         // 初始化路由菜单
         data.mainViewData.menuList = getMenuNodes(routesList as [])
@@ -38,9 +56,7 @@ const MainView = (props: Props) => {
         }
         data.mainViewData.defaultPath = activePath
         setData({ ...data })
-        console.log(data.mainViewData.defaultPath);
-
-    }, [])
+    }, [location.pathname])
 
     // 修改合并阀门 控制菜单是否合并
     const changeClose = () => {
@@ -71,7 +87,8 @@ const MainView = (props: Props) => {
             <Sider collapsed={data.mainViewData.isClose}>
                 <Menu
                     onClick={onClick}
-                    selectedKeys={data.mainViewData.defaultPath}
+                    // 默认初始选中
+                    selectedKeys={data.mainViewData.defaultPath.length > 0 ? data.mainViewData.defaultPath : location.pathname.split('/')}
                     openKeys={data.mainViewData.OpenKeys}
                     mode="inline"
                     theme="dark"
@@ -87,17 +104,10 @@ const MainView = (props: Props) => {
                             <Col span={1} >
                                 <Button onClick={changeClose} type="link" icon={!data.mainViewData.isClose ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />} />
                             </Col>
-                            <Col span={3} >
-                                <Breadcrumb className='bread' >
-                                    <Breadcrumb.Item>
-                                        <a href="">首页</a>
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Item>
-                                        <a href="">全部信息</a>
-                                    </Breadcrumb.Item>
-                                </Breadcrumb>
+                            <Col span={8} >
+                                <Breadcrumb >{breadCrumbCheck()}</Breadcrumb>
                             </Col>
-                            <Col span={3} >3</Col>
+                            <Col span={8} >3</Col>
                             <Col span={3} >4</Col>
                         </Row>
                     </div>

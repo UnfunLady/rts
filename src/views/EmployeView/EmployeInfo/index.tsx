@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect, useRef } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 
 import { SearchOutlined, EditOutlined, DeleteOutlined, UserOutlined, SmileOutlined, IdcardOutlined, MoneyCollectOutlined, HomeOutlined, LayoutOutlined, MailOutlined, PhoneOutlined, PlusOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { employeInfoDataInit, getCityList, changeAddOrUpdateSelect, employeSelect, getEmploye, getAllDept, getGroup, getAllProvinceAndCityList, cofimAddOrUpdate, editEmploye } from '../../../type/employeInfo'
+import { employeInfoDataInit, getCityList, changeAddOrUpdateSelect, searchEmployeInfo, employeSelect, getEmploye, getAllDept, getGroup, deleteEmploye, getAllProvinceAndCityList, cofimAddOrUpdate, editEmploye } from '../../../type/employeInfo'
 import { Card, Select, Form, Button, Table, Popconfirm, Input, Empty, Pagination, Modal, Radio, DatePicker, message } from 'antd';
 import './index.less'
 interface DataType {
@@ -16,9 +16,10 @@ const EmployeInfo: FC = () => {
     // 初始化数据
     const [data, setData] = useState(new employeInfoDataInit())
     // 是否删除
-    const [isDelete, setDelete] = useState(false)
-    const cancelDelete = () => {
-        setDelete(false)
+    const confirmDelete = (record: any) => {
+        deleteEmploye(record.employno)
+        // 获取员工
+        getEmploye(data, setData)
     }
     // 表格行
     const columns: ColumnsType<DataType> = [
@@ -84,7 +85,7 @@ const EmployeInfo: FC = () => {
             render: (_, record: { key: React.Key }) =>
                 <>
                     <Button style={{ height: "27px", borderRadius: "3px", border: "none", fontSize: "12px" }} type="primary" icon={<EditOutlined />} onClick={() => editEmploye(record, data, setData, setOpen, addOrUpdateForm)}>修改</Button>
-                    <Popconfirm title="是否要删除员工?" cancelText="取消" okText="删除">
+                    <Popconfirm title={`您确定要删除员工吗？`} cancelText="取消" okText="删除" onConfirm={() => confirmDelete(record)}>
                         <Button style={{ height: "27px", marginLeft: "15px", borderRadius: "3px", border: "none", fontSize: "12px" }} danger icon={<DeleteOutlined />} type='primary'>删除</Button>
                     </Popconfirm>
                 </>
@@ -190,6 +191,16 @@ const EmployeInfo: FC = () => {
         data.initData.addOrUpdateForm.isUpdate = false
         showModal()
     }
+    // 绑定搜索的keyword
+    const changeKeyword = (e: any) => {
+        data.initData.addOrUpdateForm.keyword = e.target.value
+        setData({ ...data })
+    }
+    // 查找
+    const searchEmploye = () => {
+        const keyword = selectForm.current.getFieldValue('keyword')
+        searchEmployeInfo(data, keyword, setData)
+    }
     return (
         <div className="EmployeInfo" style={{ margin: "30px", }}>
             <Card style={{ boxShadow: "0px 0px 12px rgba(0, 0, 0, 0.05)" }} >
@@ -204,10 +215,10 @@ const EmployeInfo: FC = () => {
                             {data.initData.groupSelect}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="查询" >
+                    <Form.Item label="查询" name="keyword" >
                         <div style={{ display: 'inline-block' }}>
-                            <Input placeholder='请输入查询信息' size='large' style={{ width: 200 }} />
-                            <Button style={{ marginLeft: '15px', borderRadius: '5px' }} type="primary" icon={<SearchOutlined />}>
+                            <Input placeholder='请输入查询信息' onInput={(e) => { changeKeyword(e) }} size='large' style={{ width: 200 }} />
+                            <Button disabled={data.initData.addOrUpdateForm.keyword === ''} style={{ marginLeft: '15px', borderRadius: '5px' }} type="primary" icon={<SearchOutlined />} onClick={searchEmploye}>
                                 搜索
                             </Button>
                         </div>
@@ -233,10 +244,12 @@ const EmployeInfo: FC = () => {
                 onChange={pageChange}
             />
             <Empty
-                style={{ display: data.initData.employeInfo.length > 0 ? "none" : 'block', marginTop: '100px' }}
-                imageStyle={{
-                    height: 60,
 
+                // image="http://localhost:3000/images/empty.svg"
+                style={{ height: "100%", display: data.initData.employeInfo.length > 0 ? "none" : 'block', marginTop: '100px' }}
+                imageStyle={{
+                    width: "100%",
+                    height: '100%'
                 }}
                 description={
                     <span>

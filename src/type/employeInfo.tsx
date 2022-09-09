@@ -50,6 +50,7 @@ interface employeInfoData {
         province: string,  // 所属省（直辖市）
         city: string,    // 所属市 
         isUpdate: boolean,
+        keyword: string | number,
     },
     provinceListAll: [],//全国的省
     cityListAll: [],//全国地市
@@ -91,6 +92,7 @@ export class employeInfoDataInit {
             province: '',  // 所属省（直辖市）
             city: '',     // 所属市 
             isUpdate: false,
+            keyword: ''
         },
         provinceListAll: [],//全国的省
         cityListAll: [],//全国地市
@@ -150,9 +152,14 @@ export const getGroup = async (data: employeInfoDataInit, setData: Function) => 
         message.error('请求出错请稍后重试')
     }
 }
-// 选择小组后获取员工
-export const getEmploye = async (data: employeInfoDataInit, setData: Function) => {
-    const res: any = await employe.reqGetGroupEmploye(data.initData.selectForm)
+// 搜索员工
+export const searchEmployeInfo = async (data: employeInfoDataInit, keyword: string | number, setData: Function) => {
+    const searchData = {
+        keyword,
+        page: data.initData.selectForm.page,
+        size: data.initData.selectForm.size
+    }
+    const res: any = await employe.reqSearchEmploye(searchData)
     if (res.code === 200) {
         data.initData.employeInfo = res.employeInfo;
         data.initData.employeCount = res.count
@@ -173,11 +180,44 @@ export const getEmploye = async (data: employeInfoDataInit, setData: Function) =
                 deptname: employe.deptname
             }
         })
+    } else {
+        message.error('获取员工信息失败')
+    }
 
+}
+// 选择小组后获取员工
+export const getEmploye = async (data: employeInfoDataInit, setData: Function) => {
+    const { keyword } = data.initData.addOrUpdateForm
+    if (keyword !== '') {
+        searchEmployeInfo(data, keyword, setData)
+    } else {
+        const res: any = await employe.reqGetGroupEmploye(data.initData.selectForm)
+        if (res.code === 200) {
+            data.initData.employeInfo = res.employeInfo;
+            data.initData.employeCount = res.count
+            setData({ ...data })
+            data.initData.tableDatas = data.initData.employeInfo.map((employe: employeInfo) => {
+                return {
+                    key: employe.employno,
+                    employno: employe.employno,
+                    employname: employe.employname,
+                    employage: employe.employage,
+                    employsex: employe.employsex,
+                    employidcard: employe.employidcard,
+                    employphone: employe.employphone,
+                    entryDate: employe.entryDate,
+                    employemail: employe.employemail,
+                    employaddress: employe.employaddress,
+                    employsalary: employe.employsalary,
+                    deptname: employe.deptname
+                }
+            })
+        }
+        else {
+            message.error('请求出错请稍后重试')
+        }
     }
-    else {
-        message.error('请求出错请稍后重试')
-    }
+
 }
 // 获取全国的省市县 （返回结果大概3万行 不能暴力遍历）
 export const getAllProvinceAndCityList = (data: employeInfoDataInit, setData: Function) => {
@@ -250,7 +290,7 @@ export const cofimAddOrUpdate = async (data: employeInfoDataInit) => {
     }
 
 }
-
+// 点击修改员工
 export const editEmploye = (key: any, data: employeInfoDataInit, setData: Function, setOpen: Function, addOrUpdateForm: any) => {
     //    设置要修改的员工号
     data.initData.addOrUpdateForm.employno = key.employno
@@ -273,3 +313,14 @@ export const editEmploye = (key: any, data: employeInfoDataInit, setData: Functi
     })
     setOpen(true)
 }
+
+// 删除员工
+export const deleteEmploye = async (employno: number | string) => {
+    const res: any = await employe.reqDeleteEmploye({ employno })
+    if (res.code === 200) {
+        message.success('删除员工成功！')
+    } else {
+        message.error('删除员工失败！')
+    }
+}
+

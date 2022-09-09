@@ -8,6 +8,11 @@ interface deptData {
     page?: number | string,
     size?: number | string
 }
+interface searchEmployeData {
+    keyword: string | number,
+    page: string | number,
+    size: string | number
+}
 // 获取全部部门 
 const reqAllDept = () => {
     return request({ url: '/deptInfo', method: 'get' })
@@ -19,6 +24,10 @@ const reqGetDeptByDno = (params: deptData) => {
 // 根据团队获取员工
 const reqGetGroupEmploye = (params: deptData) => {
     return request({ url: '/getEmployee', method: 'get', params })
+}
+// 关键字查找
+const reqSearchEmploye = (params: searchEmployeData) => {
+    return request({ url: '/searchEmploy', method: 'get', params })
 }
 // 获取省市（高德地图API）
 // const reqGetAllProvinceAndAllCity = () => {
@@ -46,12 +55,18 @@ const reqGetAllProvinceAndAllCity = () => {
 const reqAddOrUpdateEmploye = (data: object) => {
     return request({ url: '/addOrUpdateEmploy', method: 'post', data })
 }
+// 删除员工
+const reqDeleteEmploye = (data: object) => {
+    return request({ url: '/deleteEmploy', method: 'post', data })
+}
 const employe = {
     reqAllDept,
     reqGetDeptByDno,
     reqGetGroupEmploye,
     reqGetAllProvinceAndAllCity,
-    reqAddOrUpdateEmploye
+    reqAddOrUpdateEmploye,
+    reqDeleteEmploye,
+    reqSearchEmploye
 }
 
 export default employe
