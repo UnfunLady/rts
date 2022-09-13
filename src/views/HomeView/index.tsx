@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import  { useState, useEffect } from 'react'
 // 引入路由表
 import routes from '../../router'
 // 引入location获取路径
@@ -10,11 +10,11 @@ import type { MenuProps } from 'antd'
 import { mainViewDataInit, getMenuNodes } from '../../type/mainView';
 import { MenuFoldOutlined, MenuUnfoldOutlined, } from '@ant-design/icons';
 import './index.less'
-import { Route } from 'antd/lib/breadcrumb/Breadcrumb';
 import { breadcrumbNameMap } from '../../router';
 
 const { Header, Sider, Content } = Layout;
-type Props = {}
+type Props = {
+}
 const MainView = (props: Props) => {
     // didmount时初始化
     // 定义初始数据
@@ -49,9 +49,13 @@ const MainView = (props: Props) => {
         data.mainViewData.menuList = getMenuNodes(routesList as [])
         // 刷新的时候获取默认路径
         const activePath: string[] = location.pathname.split('/')
+        //   三级四级
         switch (activePath.length) {
             case 4:
                 data.mainViewData.OpenKeys = activePath.slice(0, 3)
+                break;
+            case 5:
+                data.mainViewData.OpenKeys = activePath.slice(0, 4)
                 break;
         }
         data.mainViewData.defaultPath = activePath
@@ -79,6 +83,7 @@ const MainView = (props: Props) => {
     };
     const onOpenChange = (openKeys: string[]) => {
         data.mainViewData.OpenKeys = openKeys
+
         setData({ ...data })
     }
 
@@ -89,6 +94,7 @@ const MainView = (props: Props) => {
                     onClick={onClick}
                     // 默认初始选中
                     selectedKeys={data.mainViewData.defaultPath.length > 0 ? data.mainViewData.defaultPath : location.pathname.split('/')}
+                    defaultOpenKeys={data.mainViewData.OpenKeys}
                     openKeys={data.mainViewData.OpenKeys}
                     mode="inline"
                     theme="dark"

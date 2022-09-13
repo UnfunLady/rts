@@ -1,9 +1,13 @@
 import { Navigate } from 'react-router-dom'
-import { MenuOutlined, AppstoreOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
+import { MenuOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
 import HomeView from '../views/HomeView'
 import MainView from '../views/MainView'
 import EmployeView from '../views/EmployeView'
 import EmployeInfo from '../views/EmployeView/EmployeInfo'
+import EmployeSalary from '../views/EmployeView/EmployeSalary';
+import SalaryIndexView from '../views/EmployeView/EmployeSalary/IndexView';
+import DepartmentSalaryDetail from '../views/EmployeView/EmployeSalary/IndexView/departmentSalaryDetail';
+import EmployeDetailView from '../views/EmployeView/EmployeSalary/IndexView/employeDetailView';
 
 // const HomeView = lazy(() => import('../views/HomeView'))
 // const MainView = lazy(() => import('../views/MainView'))
@@ -35,6 +39,15 @@ const routes: any = [
         element: (
             <>
                 <Navigate to="/homeView/employeView/employeInfo" />
+            </>
+        ),
+    },
+    {
+        path: '/homeView/employeView/employeSalary',
+        show: false,
+        element: (
+            <>
+                <Navigate to="/homeView/employeView/employeSalary/salaryIndexView" />
             </>
         ),
     },
@@ -78,6 +91,40 @@ const routes: any = [
                         breadcrumbName: '员工管理',
                         show: true,
                     },
+                    {
+                        path: 'employeSalary',
+                        element: <EmployeSalary />,
+                        icon: <MoneyCollectOutlined />,
+                        title: '薪资管理',
+                        breadcrumbName: '薪资管理',
+                        show: true,
+                        children: [
+                            {
+                                path: 'salaryIndexView',
+                                element: <SalaryIndexView />,
+                                icon: <UserOutlined />,
+                                title: '部门薪资管理',
+                                breadcrumbName: '部门薪资管理',
+                                show: true,
+                            },
+                            {
+                                path: 'departmentSalaryDetail',
+                                element: <DepartmentSalaryDetail />,
+                                icon: <UserOutlined />,
+                                title: '部门薪资管理',
+                                breadcrumbName: '部门薪资管理',
+                                show: true,
+                            },
+                            {
+                                path: 'employeDetailView',
+                                element: <EmployeDetailView />,
+                                icon: <UserOutlined />,
+                                title: '员工工资明细',
+                                breadcrumbName: '员工工资明细',
+                                show: true,
+                            },
+                        ]
+                    },
                 ]
             },
         ]
@@ -93,5 +140,8 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/mainView': '首页信息',
     '/homeView/employeView': '员工菜单',
     '/homeView/employeView/employeInfo': '员工管理',
+    '/homeView/employeView/employeSalary': '薪资管理',
+    '/homeView/employeView/employeSalary/salaryIndexView': '全部信息',
+    '/homeView/employeView/employeSalary/departmentSalaryDetail': '部门薪资信息',
 };
 export default routes

@@ -59,6 +59,14 @@ const reqAddOrUpdateEmploye = (data: object) => {
 const reqDeleteEmploye = (data: object) => {
     return request({ url: '/deleteEmploy', method: 'post', data })
 }
+// 获取部门工资明细
+interface SalaryInfo {
+    dno: string | number
+}
+// 获取部门工资明细
+const reqGetSalaryInfo = (params: SalaryInfo) => {
+    return request({ url: '/getSaralyInfo', method: 'get', params })
+}
 const employe = {
     reqAllDept,
     reqGetDeptByDno,
@@ -66,7 +74,8 @@ const employe = {
     reqGetAllProvinceAndAllCity,
     reqAddOrUpdateEmploye,
     reqDeleteEmploye,
-    reqSearchEmploye
+    reqSearchEmploye,
+    reqGetSalaryInfo
 }
 
 export default employe
