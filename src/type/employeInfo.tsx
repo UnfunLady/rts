@@ -1,7 +1,7 @@
 
 import { employe } from '../api';
 
-import { message, Select, Button } from 'antd'
+import { message, Select } from 'antd'
 import moment from 'moment';
 const { Option } = Select;
 export interface DataType {

@@ -143,5 +143,6 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/employeView/employeSalary': '薪资管理',
     '/homeView/employeView/employeSalary/salaryIndexView': '全部信息',
     '/homeView/employeView/employeSalary/departmentSalaryDetail': '部门薪资信息',
+    '/homeView/employeView/employeSalary/employeDetailView': '部门员工薪资信息',
 };
 export default routes

@@ -67,6 +67,16 @@ interface SalaryInfo {
 const reqGetSalaryInfo = (params: SalaryInfo) => {
     return request({ url: '/getSaralyInfo', method: 'get', params })
 }
+// 修改部门工资明细的细节
+const reqUpdateSalaryInfo = (data: any) => {
+    return request({ url: '/updateSalaryInfo', method: 'post', data })
+}
+
+
+// 获取部门员工详细工资细节
+const reqGetSalaryDetailInfo = (params: object) => {
+    return request({ url: '/getSaralyDetailInfo', method: 'get', params })
+}
 const employe = {
     reqAllDept,
     reqGetDeptByDno,
@@ -75,7 +85,9 @@ const employe = {
     reqAddOrUpdateEmploye,
     reqDeleteEmploye,
     reqSearchEmploye,
-    reqGetSalaryInfo
+    reqGetSalaryInfo,
+    reqUpdateSalaryInfo,
+    reqGetSalaryDetailInfo
 }
 
 export default employe

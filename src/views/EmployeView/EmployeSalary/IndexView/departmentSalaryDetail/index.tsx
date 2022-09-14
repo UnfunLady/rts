@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Table, Card, Tag, Slider, Switch } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { initDepartmentData, getEmployeSalaryInfo } from '../../../../../type/employeSalary';
+import { initDepartmentData, getEmployeSalaryInfo, updateEmployeSalaryInfo } from '../../../../../type/employeSalary';
 import Header from '../../../../../component/Header';
 interface DataType {
     key: string,
@@ -114,33 +114,33 @@ const DepartmentSalaryDetail: FC = () => {
             align: 'center',
             render: (_, record: any) => {
                 return (
-                    <Switch loading={data.initDepartmentData.employeSalaryForm.isLoading} onChange={changeIsuse} checkedChildren="补助" checked={record.isuse === 'true' ? true : false} unCheckedChildren="不补助" defaultChecked />
+                    <Switch loading={data.initDepartmentData.employeSalaryForm.isLoading} onChange={(newValue) => changeIsuse(newValue, record)} checkedChildren="补助" checked={record.isuse === 'true' ? true : false} unCheckedChildren="不补助" defaultChecked />
                 )
             }
         },
     ];
     // 修改补贴
-    const changeIsuse = (newValue: boolean) => {
-
-
-        console.log(newValue);
+    const changeIsuse = (newValue: boolean, record: any) => {
+        data.initDepartmentData.employeSalaryForm.editForm.deptid = record.deptid;
+        data.initDepartmentData.employeSalaryForm.editForm.isuse = newValue;
+        setData({ ...data })
+        updateEmployeSalaryInfo(data, setData)
+        getEmployeSalaryInfo(data, setData)
 
     }
     // 修改绩效
     const changePerformance = (newValue: string | number, record: any) => {
-        data.initDepartmentData.employeSalaryForm.performance.deptid = record.deptid
-        data.initDepartmentData.employeSalaryForm.performance.performance = newValue
-        data.initDepartmentData.employeSalaryForm.isLoading = true;
-        setData({ ...data })
-        // todo 修改绩效之类
-
-        
-        // 锁住操作条
-        setTimeout(() => {
-            data.initDepartmentData.employeSalaryForm.isLoading = false;
+        if (!data.initDepartmentData.employeSalaryForm.isLoading) {
+            data.initDepartmentData.employeSalaryForm.performance.deptid = record.deptid
+            data.initDepartmentData.employeSalaryForm.performance.performance = newValue
+            data.initDepartmentData.employeSalaryForm.isLoading = true;
             setData({ ...data })
-        }, 1000)
+            //修改绩效
+            updateEmployeSalaryInfo(data, setData)
+        }
     }
+
+
 
     return (
         <div className="departmentSalaryDetail" style={{ margin: "20px" }}>

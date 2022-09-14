@@ -24,8 +24,14 @@ export default function MainView(props: Props) {
                     deptInfo: JSON.stringify(dept)
                 }
             })
+        } else {
+            navigate('/homeView/employeView/employeSalary/employeDetailView', {
+                state: {
+                    deptInfo: JSON.stringify(dept)
+                }
+            })
         }
-        console.log(1);
+
 
     }
     return (
@@ -53,14 +59,13 @@ export default function MainView(props: Props) {
                                     <div className="action" >
                                         <Button type="link" onClick={() => goToDetail(dept, 'dept')}>部门整体工资明细</Button>
                                         <span className='splitBtn'></span>
-                                        <Button type="link" >员工详细工资明细</Button>
+                                        <Button type="link" onClick={() => goToDetail(dept, 'employe')} >员工详细工资明细</Button>
                                     </div>
                                 </Card>
                             </Col>
                         )
                     })
                 }
-
             </Row >
         </div >
     )
