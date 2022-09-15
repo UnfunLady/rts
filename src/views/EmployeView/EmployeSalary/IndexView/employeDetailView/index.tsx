@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import type { ColumnsType } from 'antd/es/table';
 
-import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
-import { EmployeSalaryDetailData, getDeptByDno, getEmployeSalaryDetailInfo } from '../../../../../type/employeSalary'
-import { Card, Steps, Select, Slider, Button, Table, Switch } from 'antd'
+import { ArrowLeftOutlined, ArrowRightOutlined, BackwardOutlined } from '@ant-design/icons';
+import { EmployeSalaryDetailData, getDeptByDno, updateEmployeSalaryDetail, getEmployeSalaryDetailInfo } from '../../../../../type/employeSalary'
+import { Card, Steps, Select, Result, Descriptions, Slider, Tag, Button, Table, Switch, message } from 'antd'
 import Header from '../../../../../component/Header'
 import { useLocation } from 'react-router-dom'
 export default function EmployeDetailView() {
@@ -29,21 +29,56 @@ export default function EmployeDetailView() {
         data.employeSalaryDetailForm.DetailForm.deptid = value;
         setData({ ...data })
     }
+    // 上一步
+    const preStep = () => {
+        if (data.employeSalaryDetailForm.active === 0) {
+            data.employeSalaryDetailForm.editList = []
+            // 清空编辑列表
+            // 清空数据 保持最新
+            data.employeSalaryDetailForm.DetailForm.tableDatas = []
+            setData({ ...data })
+            message.info('已经是第一步了')
+        } else if (data.employeSalaryDetailForm.active === 1) {
+            // 清空编辑列表
+            data.employeSalaryDetailForm.editList = []
+            // 清空数据 保持最新
+            data.employeSalaryDetailForm.DetailForm.tableDatas = []
+            data.employeSalaryDetailForm.active--
+            setData({ ...data })
+        }
+        else {
+            data.employeSalaryDetailForm.active--
+            setData({ ...data })
+
+        }
+
+    }
     // 下一步
     const nextStep = () => {
         switch (data.employeSalaryDetailForm.active) {
             case 0:
-                data.employeSalaryDetailForm.active++
-                setData({ ...data })
                 getEmployeSalaryDetailInfo(data, setData)
+                setData({ ...data })
                 break;
-
+            case 1:
+                if (data.employeSalaryDetailForm.editList.length === 0) {
+                    message.error('尚未修改员工信息')
+                } else {
+                    getEmployeSalaryDetailInfo(data, setData)
+                    setData({ ...data })
+                }
+                break;
+            case 2:
+                updateEmployeSalaryDetail(data, setData)
+                setData({ ...data })
+                break;
             default:
-                console.log(1);
                 break;
         }
 
     }
+
+
 
     // 修改绩效
     const changeSub = (checked: number | string | boolean, record: any, type: string, index: number,) => {
@@ -78,7 +113,7 @@ export default function EmployeDetailView() {
             // 解锁
             data.employeSalaryDetailForm.loading = false
             setData({ ...data })
-        }, 1000)
+        }, 500)
         // 计算薪资
         const allSalary = (
             (
@@ -119,6 +154,13 @@ export default function EmployeDetailView() {
         );
 
     }
+    // 返回第一步
+    const backOne = () => {
+        data.employeSalaryDetailForm.active = 0;
+        data.employeSalaryDetailForm.editList = []
+        setData({ ...data })
+    }
+
     interface DataType {
         key: string,
         id: string | number
@@ -237,14 +279,66 @@ export default function EmployeDetailView() {
                     <div style={{ margin: "30px 0 30px 0", display: data.employeSalaryDetailForm.active === 1 ? "block" : "none" }}>
                         <Table rowKey={record => record.key} pagination={false} dataSource={data.employeSalaryDetailForm.DetailForm.tableDatas} bordered columns={columns} />
                     </div>
+                    <div style={{ margin: "30px 0 30px 0", display: data.employeSalaryDetailForm.active === 2 ? "block" : "none" }}>
+                        <h3><span style={{ fontWeight: "bold" }}>请确认要修改的信息</span></h3>
+                        {
+                            data.employeSalaryDetailForm.editList.map((employe: any) => {
+                                return (
+                                    <Descriptions bordered size='middle' key={employe.key} style={{ marginTop: "20px" }}>
+                                        <Descriptions.Item label="团队名"><Tag color="default">{employe.deptname}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="员工姓名"><Tag color="error">{employe.employname}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="社保"><Tag color="default">{employe.usesocialSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="房补"><Tag color="default">{employe.usehouseSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="餐补" ><Tag color="default">{employe.useeatSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="交通补" ><Tag color="default">{employe.usetransSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="高温补" ><Tag color="default">{employe.usehotSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="绩效(1000元)"><Tag color="default">{employe.usePerformance === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="底薪" ><Tag color="default">{employe.salary === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="是否补贴" ><Tag color="success">{employe.isuse === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="应发工资" ><Tag color="success">{employe.allSalary}</Tag></Descriptions.Item>
+                                    </Descriptions>
+                                )
+                            })
+                        }
+                    </div>
+                    <div style={{ margin: "30px 0 30px 0", display: data.employeSalaryDetailForm.active === 3 ? "block" : "none" }}>
+                        <div style={{ display: data.employeSalaryDetailForm.editSuccess ? "block" : "none" }}>
+                            <Result
+                                status="success"
+                                title="修改成功"
+                                subTitle="点击返回继续选择修改"
+                                extra={[
+                                    <Button icon={<BackwardOutlined />} type="primary" key="console" onClick={backOne}>
+                                        返回第一步
+                                    </Button>,
+
+                                ]}
+                            />
+                        </div>
+                        <div style={{ display: !data.employeSalaryDetailForm.editSuccess ? "block" : "none" }}>
+                            <Result
+                                status="error"
+                                title="修改失败"
+                                subTitle="点击返回继续选择修改"
+                                extra={[
+                                    <Button icon={<BackwardOutlined />} type="primary" key="console" onClick={backOne}>
+                                        返回第一步
+                                    </Button>,
+
+                                ]}
+                            />
+                        </div>
+                    </div>
+
+
                 </div>
 
-                <div style={{ margin: "0 auto", textAlign: "center" }}>
-                    <Button disabled={data.employeSalaryDetailForm.DetailForm.deptid === 0} type='primary' style={{ margin: "4px" }} icon={<ArrowLeftOutlined />}>上一步</Button>
-                    <Button disabled={data.employeSalaryDetailForm.DetailForm.deptid === 0} type='primary' style={{ margin: "4px" }} icon={<ArrowRightOutlined />} onClick={nextStep}>下一步</Button>
+                <div style={{ margin: "0 auto", textAlign: "center", display: data.employeSalaryDetailForm.active === 3 ? "none" : "block" }}>
+                    <Button disabled={data.employeSalaryDetailForm.DetailForm.deptid === 0} type='primary' style={{ margin: "4px" }} icon={<ArrowLeftOutlined />} onClick={preStep}>上一步</Button>
+                    <Button loading={data.employeSalaryDetailForm.loading} disabled={data.employeSalaryDetailForm.DetailForm.deptid === 0} type='primary' style={{ margin: "4px" }} icon={<ArrowRightOutlined />} onClick={nextStep}>{data.employeSalaryDetailForm.active < 2 ? "下一步" : "提交修改"}</Button>
                 </div>
-            </Card>
-        </div>
+            </Card >
+        </div >
     )
 
 }

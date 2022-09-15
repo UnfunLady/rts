@@ -17,6 +17,19 @@ interface deptInfoData {
 const DepartmentSalaryDetail: FC = () => {
     const [data, setData] = useState(new initDepartmentData())
     const location: any = useLocation()
+    // 防抖函数
+    // const deboundce = (fn: Function, wait: number = 800) => {
+    //     let timer: any;
+    //     return function () {
+    //         clearTimeout(timer);
+    //         timer = setTimeout(function () {
+    //             // console.log(this)  //=>这里面的this指向window，也就是前面的count那的this是指向window
+    //             //但是防抖函数的this应该是指向container
+    //             fn();
+    //         }, wait)
+    //     }
+    // }
+
     useEffect(() => {
         if (location.state) {
             const deptInfo: deptInfoData = JSON.parse(location.state.deptInfo);
@@ -102,7 +115,7 @@ const DepartmentSalaryDetail: FC = () => {
                         min={1}
                         max={100}
                         defaultValue={record.performance}
-                        onChange={(newValue) => changePerformance(newValue, record)}
+                        onAfterChange={(newValue) => changePerformance(newValue, record)}
                     />
                 )
             }
@@ -128,6 +141,10 @@ const DepartmentSalaryDetail: FC = () => {
         getEmployeSalaryInfo(data, setData)
 
     }
+
+
+
+
     // 修改绩效
     const changePerformance = (newValue: string | number, record: any) => {
         if (!data.initDepartmentData.employeSalaryForm.isLoading) {

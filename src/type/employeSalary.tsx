@@ -190,7 +190,6 @@ export const getDeptByDno = async (data: EmployeSalaryDetailData, setData: Funct
 }
 // 获取部门员工细节
 export const getEmployeSalaryDetailInfo = async (data: EmployeSalaryDetailData, setData: Function) => {
-
     const res: any = await employe.reqGetSalaryDetailInfo(data.employeSalaryDetailForm.DetailForm)
     if (res.code === 200) {
         data.employeSalaryDetailForm.DetailForm.employeDetail = data.employeSalaryDetailForm.DetailForm.employeDetail = res.detailInfo;
@@ -241,10 +240,34 @@ export const getEmployeSalaryDetailInfo = async (data: EmployeSalaryDetailData, 
                 )
             }
         })
+        data.employeSalaryDetailForm.active++
         setData({ ...data })
 
     } else {
         message.error('获取员工信息失败！')
+    }
+
+}
+
+// 修改部门员工细节
+export const updateEmployeSalaryDetail = async (data: EmployeSalaryDetailData, setData: Function) => {
+    const res: any = await employe.reqUpdateSalaryDetail(data.employeSalaryDetailForm.editList)
+    data.employeSalaryDetailForm.loading = true
+    setData({ ...data })
+    if (res.code === 200) {
+        setTimeout(() => {
+            data.employeSalaryDetailForm.loading = false;
+            // 提交修改
+            data.employeSalaryDetailForm.active++
+            setData({ ...data })
+        }, 1000)
+        data.employeSalaryDetailForm.editSuccess = true
+        setData({ ...data })
+    } else {
+        // 提交修改
+        data.employeSalaryDetailForm.active++
+        setData({ ...data })
+        message.error('修改失败!')
     }
 
 }

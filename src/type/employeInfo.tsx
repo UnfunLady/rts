@@ -52,6 +52,8 @@ interface employeInfoData {
         isUpdate: boolean,
         keyword: string | number,
     },
+    routeDno: any,
+    routeDeptId: any,
     provinceListAll: [],//全国的省
     cityListAll: [],//全国地市
 }
@@ -94,6 +96,8 @@ export class employeInfoDataInit {
             isUpdate: false,
             keyword: ''
         },
+        routeDno: 1,
+        routeDeptId: undefined,
         provinceListAll: [],//全国的省
         cityListAll: [],//全国地市
 

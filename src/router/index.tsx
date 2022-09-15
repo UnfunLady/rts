@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import { MenuOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
+import { MenuOutlined, SolutionOutlined, HomeOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
 import HomeView from '../views/HomeView'
 import MainView from '../views/MainView'
 import EmployeView from '../views/EmployeView'
@@ -8,12 +8,12 @@ import EmployeSalary from '../views/EmployeView/EmployeSalary';
 import SalaryIndexView from '../views/EmployeView/EmployeSalary/IndexView';
 import DepartmentSalaryDetail from '../views/EmployeView/EmployeSalary/IndexView/departmentSalaryDetail';
 import EmployeDetailView from '../views/EmployeView/EmployeSalary/IndexView/employeDetailView';
-
+import DepartmentView from '../views/DepartmentView';
+import DepartmentEditView from '../views/DepartmentView/DepartmentEditView'
 // const HomeView = lazy(() => import('../views/HomeView'))
 // const MainView = lazy(() => import('../views/MainView'))
 // const EmployeView = lazy(() => import('../views/EmployeView'))
 // const EmployeInfo = lazy(() => import('../views/EmployeView/EmployeInfo'))
-
 // type Route = {
 //     path: string,
 //     element: React.ReactNode,
@@ -127,6 +127,25 @@ const routes: any = [
                     },
                 ]
             },
+            {
+                path: 'department',
+                element: <DepartmentView />,
+                title: '部门菜单',
+                breadcrumbName: '部门菜单',
+                icon: <HomeOutlined />,
+                show: true,
+                children: [
+                    {
+                        path: 'departmentView',
+                        element: <DepartmentEditView />,
+                        title: '现有部门信息',
+                        breadcrumbName: '现有部门信息',
+                        icon: <SolutionOutlined />,
+                        show: true
+                    },
+                ]
+            },
+
         ]
     },
     {
@@ -144,5 +163,7 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/employeView/employeSalary/salaryIndexView': '全部信息',
     '/homeView/employeView/employeSalary/departmentSalaryDetail': '部门薪资信息',
     '/homeView/employeView/employeSalary/employeDetailView': '部门员工薪资信息',
+    '/homeView/department': '部门菜单',
+    '/homeView/department/departmentView': '现有部门信息'
 };
 export default routes

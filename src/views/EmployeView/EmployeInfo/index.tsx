@@ -5,6 +5,7 @@ import { SearchOutlined, EditOutlined, DeleteOutlined, UserOutlined, SmileOutlin
 import { employeInfoDataInit, getCityList, changeAddOrUpdateSelect, searchEmployeInfo, employeSelect, getEmploye, getAllDept, getGroup, deleteEmploye, getAllProvinceAndCityList, cofimAddOrUpdate, editEmploye } from '../../../type/employeInfo'
 import { Card, Select, Form, Button, Table, Popconfirm, Input, Empty, Pagination, Modal, Radio, DatePicker, message } from 'antd';
 import './index.less'
+import { useLocation } from 'react-router-dom';
 interface DataType {
     key: React.Key;
     name: string;
@@ -15,12 +16,29 @@ interface DataType {
 const EmployeInfo: FC = () => {
     // 初始化数据
     const [data, setData] = useState(new employeInfoDataInit())
+    // 是否有路由参数
+    const location: any = useLocation()
+    useEffect(() => {
+        // 获取全部部门的方法
+        getAllDept(data, setData)
+        setData({ ...data })
+        // 获取省份
+        getAllProvinceAndCityList(data, setData)
+        if (location.state !== null) {
+            data.initData.selectForm.dno = location.state.dno.toString()
+            data.initData.selectForm.deptId = location.state.deptId.toString()
+            // handleDeptChange(data.initData.selectForm.dno)
+            getEmploye(data, setData)
+        }
+    }, [])
+
     // 是否删除
     const confirmDelete = (record: any) => {
         deleteEmploye(record.employno)
         // 获取员工
         getEmploye(data, setData)
     }
+
     // 表格行
     const columns: ColumnsType<DataType> = [
         {
@@ -106,16 +124,10 @@ const EmployeInfo: FC = () => {
     const dateFormat = 'YYYY-MM-DD';
     // form的标签
     const selectForm: any = useRef()
-    useEffect(() => {
-        // 获取全部部门的方法
-        getAllDept(data, setData)
-        // 获取省份
-        getAllProvinceAndCityList(data, setData)
-    }, [])
     // 修改事件
     const handleDeptChange = (value: string | number) => {
         // 清空小组的值 需要给表单打ref和form.item的name
-        selectForm.current.setFieldsValue({
+        selectForm.current?.setFieldsValue({
             groupSelect: undefined
         })
         data.initData.selectForm.deptId = ''
@@ -124,6 +136,7 @@ const EmployeInfo: FC = () => {
         // 获取小组
         getGroup(data, setData)
     }
+
     // 选择小组同时获取学生
     const handleGroupChange = (value: string | number) => {
         data.initData.selectForm.deptId = value
@@ -133,6 +146,7 @@ const EmployeInfo: FC = () => {
         // 添加和修改要用到的选择项
         employeSelect(data, setData)
     }
+
     // 修改页码
     const pageChange = (page: number, size: number) => {
         data.initData.selectForm.page = page;
@@ -206,12 +220,12 @@ const EmployeInfo: FC = () => {
             <Card style={{ boxShadow: "0px 0px 12px rgba(0, 0, 0, 0.05)" }} >
                 <Form ref={selectForm} name='basic' layout="inline">
                     <Form.Item label="部门名">
-                        <Select size="large" placeholder="请选择部门" onChange={handleDeptChange} style={{ width: 230 }}>
+                        <Select size="large" placeholder="请选择部门" onChange={handleDeptChange} defaultValue={data.initData.selectForm.dno === '' ? undefined : data.initData.selectForm.dno} style={{ width: 230 }}>
                             {data.initData.deptSelect}
                         </Select>
                     </Form.Item>
                     <Form.Item label="所属团队" name="groupSelect">
-                        <Select allowClear disabled={data.initData.selectForm.dno !== '' ? false : true} size="large" placeholder="请选择部门小组" onSelect={handleGroupChange} style={{ width: 230 }}>
+                        <Select allowClear disabled={data.initData.selectForm.dno !== '' ? false : true} size="large" placeholder="请选择部门小组" onSelect={handleGroupChange} defaultValue={data.initData.routeDeptId} style={{ width: 230 }}>
                             {data.initData.groupSelect}
                         </Select>
                     </Form.Item>

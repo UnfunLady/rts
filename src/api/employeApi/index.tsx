@@ -1,4 +1,3 @@
-import axios from "axios";
 import request from "../../http";
 
 // 部门有关
@@ -71,12 +70,16 @@ const reqGetSalaryInfo = (params: SalaryInfo) => {
 const reqUpdateSalaryInfo = (data: any) => {
     return request({ url: '/updateSalaryInfo', method: 'post', data })
 }
-
-
 // 获取部门员工详细工资细节
 const reqGetSalaryDetailInfo = (params: object) => {
     return request({ url: '/getSaralyDetailInfo', method: 'get', params })
 }
+// 更新员工工资明细
+const reqUpdateSalaryDetail = (data: object) => {
+    return request({ url: '/updateSalaryDetail', method: 'post', data })
+}
+
+
 const employe = {
     reqAllDept,
     reqGetDeptByDno,
@@ -87,7 +90,8 @@ const employe = {
     reqSearchEmploye,
     reqGetSalaryInfo,
     reqUpdateSalaryInfo,
-    reqGetSalaryDetailInfo
+    reqGetSalaryDetailInfo,
+    reqUpdateSalaryDetail
 }
 
 export default employe
