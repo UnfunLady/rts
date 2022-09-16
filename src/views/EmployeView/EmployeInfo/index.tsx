@@ -18,6 +18,7 @@ const EmployeInfo: FC = () => {
     const [data, setData] = useState(new employeInfoDataInit())
     // 是否有路由参数
     const location: any = useLocation()
+
     useEffect(() => {
         // 获取全部部门的方法
         getAllDept(data, setData)
@@ -26,6 +27,7 @@ const EmployeInfo: FC = () => {
         getAllProvinceAndCityList(data, setData)
         if (location.state !== null) {
             data.initData.selectForm.dno = location.state.dno.toString()
+            getAllDept(data, setData)
             data.initData.selectForm.deptId = location.state.deptId.toString()
             // handleDeptChange(data.initData.selectForm.dno)
             getEmploye(data, setData)

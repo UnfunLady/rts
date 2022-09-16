@@ -7,7 +7,7 @@ export default function DepartmentEditView() {
 
         <div style={{ margin: "30px" }}>
             <Header title="部门管理" explain="该功能是针对部门的一系列管理操作" />
-     
+
             <MainView />
             <Outlet />
         </div>

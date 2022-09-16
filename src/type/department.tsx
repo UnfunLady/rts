@@ -54,7 +54,7 @@ export const getAllDeptInfo = async (data: departmentDataInit, setData: Function
                 explain: dept.explain
             }
         })
-
+        // 详细信息
         data.departmentData.childrenTableDatas = data.departmentData.allDeptInfo.map((dept: any) => {
             return dept.children.map((child: any) => {
                 return {
@@ -75,4 +75,23 @@ export const getAllDeptInfo = async (data: departmentDataInit, setData: Function
         message.error('获取部门信息失败!')
     }
 
+}
+
+
+// 修改部门用到的数据
+export interface editDepartmentData {
+    editDeptData: {
+        [propName: string]: any
+    },
+    isEdit: boolean,
+    // 是否上传头像
+    isUpload: boolean
+}
+// 初始化
+export class editDepartmentDataInit {
+    editDeptData: editDepartmentData = {
+        editDeptData: {},
+        isEdit: false,
+        isUpload: false
+    }
 }

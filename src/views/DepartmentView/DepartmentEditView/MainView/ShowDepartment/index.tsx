@@ -3,14 +3,36 @@ import { FileTextOutlined, FormOutlined, SearchOutlined, EnvironmentOutlined } f
 import { departmentDataInit } from '../../../../../type/department'
 import type { ColumnsType } from 'antd/es/table';
 import { getAllDeptInfo } from '../../../../../type/department';
-import { Avatar, Button, Card, Table, Tag } from 'antd'
+import { Avatar, Button, Card, Table, Tag, Modal } from 'antd'
 import './index.less'
 import { useNavigate } from 'react-router-dom';
-export default function ShowDepartment() {
+interface acceptFunction {
+    change: Function
+}
+export default function ShowDepartment(props: acceptFunction) {
     interface DataType {
         key: React.Key;
     }
     const [data, setData] = useState(new departmentDataInit())
+
+    //隐藏
+    const cancelOpen = () => {
+        data.departmentData.showDetail = false
+        setData({ ...data })
+    }
+    // 展示基本信息
+    const showInfo = (record: any) => {
+        data.departmentData.showDetail = true
+        data.departmentData.detailForm = {
+            avatar: record.avatar,
+            count: record.count,
+            dname: record.dname,
+            dno: record.dno,
+            explain: record.explain,
+            groupCount: record.groupCount
+        }
+        setData({ ...data })
+    }
     useEffect(() => {
         getAllDeptInfo(data, setData)
     }, [])
@@ -25,6 +47,7 @@ export default function ShowDepartment() {
             }
         })
     }
+
     // 表格行
     const columns: ColumnsType<DataType> = [
         {
@@ -51,8 +74,8 @@ export default function ShowDepartment() {
             render: (_, record: any) => {
                 return (
                     <>
-                        <Button style={{ marginRight: "20px", borderRadius: "3px", height: "30px", fontSize: "12px" }} icon={<FileTextOutlined />} type="default" >基本信息</Button>
-                        <Button style={{ borderRadius: "3px", height: "30px", fontSize: "12px" }} icon={<FormOutlined />} type='primary'>编辑信息</Button>
+                        <Button style={{ marginRight: "20px", borderRadius: "3px", height: "30px", fontSize: "12px" }} icon={<FileTextOutlined />} type="default" onClick={() => showInfo(record)}>基本信息</Button>
+                        <Button style={{ borderRadius: "3px", height: "30px", fontSize: "12px" }} icon={<FormOutlined />} type='primary' onClick={() => props.change(true, record)}>编辑信息</Button>
                     </>
                 )
             }
@@ -121,6 +144,23 @@ export default function ShowDepartment() {
                     bordered
                     size='small' />
             </Card>
+            {/* 展示基本信息 */}
+            <Modal
+                width={950}
+                open={data.departmentData.showDetail}
+                title={"基本信息"}
+                onCancel={cancelOpen}
+                footer={null}
+            >
+                <div className='detailInfo' style={{ textAlign: "center" }}>
+                    <Avatar src={data.departmentData.detailForm.avatar} size={55} />
+                    <h2>{data.departmentData.detailForm.dname}</h2>
+                    <h3>部门编号:<span><strong>{data.departmentData.detailForm.dno}</strong></span></h3>
+                    <h3>部门团队数:<span><strong>{data.departmentData.detailForm.groupCount}</strong></span></h3>
+                    <h3>部门总人数:<span><strong>{data.departmentData.detailForm.count}</strong></span></h3>
+                    <h3> 部门职责:<Tag style={{ color: "white" }} color='#f78484' >{data.departmentData.detailForm.explain}</Tag> </h3>
+                </div>
+            </Modal>
         </div>
     )
 

@@ -1,4 +1,4 @@
-import { FC, Suspense } from 'react';
+import { FC } from 'react';
 import { useRoutes } from 'react-router-dom';
 import routes from './router'
 import './App.less'
