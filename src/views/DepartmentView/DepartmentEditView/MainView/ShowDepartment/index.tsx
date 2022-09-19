@@ -4,6 +4,7 @@ import { departmentDataInit } from '../../../../../type/department'
 import type { ColumnsType } from 'antd/es/table';
 import { getAllDeptInfo } from '../../../../../type/department';
 import { Avatar, Button, Card, Table, Tag, Modal } from 'antd'
+import PubSub from 'pubsub-js'
 import './index.less'
 import { useNavigate } from 'react-router-dom';
 interface acceptFunction {
@@ -35,6 +36,14 @@ export default function ShowDepartment(props: acceptFunction) {
     }
     useEffect(() => {
         getAllDeptInfo(data, setData)
+        PubSub.subscribe('getAllDept', (msg: any, isGet: boolean) => {
+            if (isGet) {
+                getAllDeptInfo(data, setData)
+            }
+        });
+        return () => {
+            PubSub.clearAllSubscriptions()
+        }
     }, [])
     const navigate = useNavigate()
     // 查看团队下某个部门信息

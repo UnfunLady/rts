@@ -1,6 +1,5 @@
 import React, { FC, useState, useEffect, useRef } from 'react';
 import type { ColumnsType } from 'antd/es/table';
-
 import { SearchOutlined, EditOutlined, DeleteOutlined, UserOutlined, SmileOutlined, IdcardOutlined, MoneyCollectOutlined, HomeOutlined, LayoutOutlined, MailOutlined, PhoneOutlined, PlusOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { employeInfoDataInit, getCityList, changeAddOrUpdateSelect, searchEmployeInfo, employeSelect, getEmploye, getAllDept, getGroup, deleteEmploye, getAllProvinceAndCityList, cofimAddOrUpdate, editEmploye } from '../../../type/employeInfo'
 import { Card, Select, Form, Button, Table, Popconfirm, Input, Empty, Pagination, Modal, Radio, DatePicker, message } from 'antd';

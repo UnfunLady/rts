@@ -38,7 +38,7 @@ export const getMenuNodes = (menuList: MenuItem[]) => {
                         getItem(cd.title, cd.path, cd.icon,
                             // 递归遍历子路由
                             cd.children.map((cdc: any) => {
-                                return getItem(cdc.title, cdc.path, cdc.icon)
+                                return cdc.show ? getItem(cdc.title, cdc.path, cdc.icon) : null
                             })
                         )
                     )

@@ -1,5 +1,6 @@
 import { message } from "antd"
 import { employe } from "../api"
+import department from "../api/departmentApi"
 // 部门基础信息
 export interface departmentData {
     allDeptInfo: any,
@@ -10,6 +11,7 @@ export interface departmentData {
     detailForm: {
         [propName: string]: any
     },
+
     allTableDatas: Array<any>,
     childrenTableDatas: Array<any>,
 }
@@ -84,6 +86,7 @@ export interface editDepartmentData {
         [propName: string]: any
     },
     isEdit: boolean,
+    isEditGroup: boolean,
     // 是否上传头像
     isUpload: boolean
 }
@@ -92,6 +95,79 @@ export class editDepartmentDataInit {
     editDeptData: editDepartmentData = {
         editDeptData: {},
         isEdit: false,
-        isUpload: false
+        isEditGroup: false,
+        isUpload: false,
+
     }
+}
+// 有头像修改
+export const updateHasAva = async (data: any) => {
+    const res: any = await department.reqUpdateDepartmentAvatar(data)
+    if (res.code === 200) {
+        message.success('修改信息成功!')
+        return true
+    } else {
+        message.error('修改失败')
+        return false
+    }
+
+}
+export const updateNoAva = async (data: any) => {
+    const res: any = await department.reqUpdateDepartmentNoAvatar(data)
+    if (res.code === 200) {
+        message.success('修改信息成功!')
+        return true
+    } else {
+        message.error('修改失败')
+        return false
+    }
+
+}
+
+
+interface editGroupData {
+    groupInfo: [],
+    tableData: Array<any>
+}
+export class editGroupInit {
+    editGroupInitData: editGroupData = {
+        groupInfo: [],
+        tableData: []
+    }
+}
+// 获取修改的小组数据
+export const getGroupByEdit = async (data: editGroupInit, setData: Function, dno: number | string) => {
+    const res: any = await department.reqGetDeptByDno({ dno })
+    if (res.code === 200) {
+        data.editGroupInitData.groupInfo = res.groupInfo
+        data.editGroupInitData.tableData = data.editGroupInitData.groupInfo.map((group: any) => {
+            return {
+                key: group.id,
+                deptno: group.deptno,
+                id: group.id,
+                deptname: group.deptname,
+                location: group.location,
+                count: group.count
+            }
+        })
+        setData({ ...data })
+    } else {
+        message.error('获取数据失败')
+    }
+
+}
+
+// 修改小组数据
+export const updateGroupInfo = async (data: {
+    id: number | string, deptname: number | string, location: string, count: number | string
+}) => {
+    const res: any = await department.reqUpdateGroupInfo(data);
+    if (res.code === 200) {
+        message.success('修改小组成功,刷新以获取最新信息')
+        return true
+    } else {
+        message.error('修改失败！')
+        return false
+    }
+
 }

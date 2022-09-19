@@ -1,5 +1,5 @@
 
-import  { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 // 引入路由表
 import routes from '../../router'
 // 引入location获取路径
@@ -52,12 +52,15 @@ const MainView = (props: Props) => {
         //   三级四级
         switch (activePath.length) {
             case 4:
+
                 data.mainViewData.OpenKeys = activePath.slice(0, 3)
                 break;
             case 5:
+
                 data.mainViewData.OpenKeys = activePath.slice(0, 4)
                 break;
         }
+
         data.mainViewData.defaultPath = activePath
         setData({ ...data })
     }, [location.pathname])

@@ -10,6 +10,7 @@ import DepartmentSalaryDetail from '../views/EmployeView/EmployeSalary/IndexView
 import EmployeDetailView from '../views/EmployeView/EmployeSalary/IndexView/employeDetailView';
 import DepartmentView from '../views/DepartmentView';
 import DepartmentEditView from '../views/DepartmentView/DepartmentEditView'
+import EditGroupView from '../views/DepartmentView/DepartmentEditView/MainView/EditGroupView';
 // const HomeView = lazy(() => import('../views/HomeView'))
 // const MainView = lazy(() => import('../views/MainView'))
 // const EmployeView = lazy(() => import('../views/EmployeView'))
@@ -48,6 +49,16 @@ const routes: any = [
         element: (
             <>
                 <Navigate to="/homeView/employeView/employeSalary/salaryIndexView" />
+            </>
+        ),
+    },
+
+    {
+        path: '/homeView/department',
+        show: false,
+        element: (
+            <>
+                <Navigate to="/homeView/department/departmentView" />
             </>
         ),
     },
@@ -141,7 +152,12 @@ const routes: any = [
                         title: '现有部门信息',
                         breadcrumbName: '现有部门信息',
                         icon: <SolutionOutlined />,
-                        show: true
+                        show: true,
+                        children: [
+                            {
+
+                            },
+                        ]
                     },
                 ]
             },
@@ -164,6 +180,7 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/employeView/employeSalary/departmentSalaryDetail': '部门薪资信息',
     '/homeView/employeView/employeSalary/employeDetailView': '部门员工薪资信息',
     '/homeView/department': '部门菜单',
-    '/homeView/department/departmentView': '现有部门信息'
+    '/homeView/department/departmentView': '现有部门信息',
+    '/homeView/department/departmentView/editGroup': '修改小组信息'
 };
 export default routes
