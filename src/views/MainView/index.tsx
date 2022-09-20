@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 
 const Main: FC = () => {
   return (
-    <div className="Main" >
-      主页
+    <div className="Main" style={{ margin: "30px" }}>
+      TODO 主页
     </div>
   );
 }

@@ -43,7 +43,7 @@ const EditGroup = (props: {
             }
             const success = await updateGroupInfo(updateInfo)
             if (success) {
-                props.change(false)
+                
             }
         }).catch(() => {
             message.error('请按要求输入数据')
