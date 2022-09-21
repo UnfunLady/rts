@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import { MenuOutlined, SolutionOutlined, HomeOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
+import { MenuOutlined, SolutionOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
 import HomeView from '../views/HomeView'
 import MainView from '../views/MainView'
 import EmployeView from '../views/EmployeView'
@@ -11,6 +11,9 @@ import EmployeDetailView from '../views/EmployeView/EmployeSalary/IndexView/empl
 import DepartmentView from '../views/DepartmentView';
 import DepartmentEditView from '../views/DepartmentView/DepartmentEditView'
 import AddGroupView from '../views/DepartmentView/AddGroupView'
+import AddDepartmentView from '../views/DepartmentView/AddDepartmentView';
+import DeleteDepartmentView from '../views/DepartmentView/DeleteDepartmentView';
+import DMainView from '../views/DepartmentView/DeleteDepartmentView/MainView'
 // const HomeView = lazy(() => import('../views/HomeView'))
 // const MainView = lazy(() => import('../views/MainView'))
 // const EmployeView = lazy(() => import('../views/EmployeView'))
@@ -59,6 +62,15 @@ const routes: any = [
         element: (
             <>
                 <Navigate to="/homeView/department/departmentView" />
+            </>
+        ),
+    },
+    {
+        path: '/homeView/department/deleteDepartmentView',
+        show: false,
+        element: (
+            <>
+                <Navigate to="/homeView/department/deleteDepartmentView/mainView" />
             </>
         ),
     },
@@ -162,13 +174,45 @@ const routes: any = [
                     {
                         path: 'addGroupView',
                         element: <AddGroupView />,
-                        title: '组织新部门',
-                        breadcrumbName: '组织新部门',
-                        icon: <SolutionOutlined />,
+                        title: '组织新小组',
+                        breadcrumbName: '组织新小组',
+                        icon: <BlockOutlined />,
                         show: true,
                         children: [
                             {
 
+                            },
+                        ]
+                    },
+                    {
+                        path: 'addDepartmentView',
+                        element: <AddDepartmentView />,
+                        title: '创建新部门',
+                        breadcrumbName: '创建新部门',
+                        icon: <DatabaseOutlined />,
+                        show: true,
+                        children: [
+                            {
+
+                            },
+                        ]
+                    },
+
+                    {
+                        path: 'deleteDepartmentView',
+                        element: <DeleteDepartmentView />,
+                        title: '解散部门或小组',
+                        breadcrumbName: '解散部门或小组',
+                        icon: <DeleteOutlined />,
+                        show: true,
+                        children: [
+                            {
+                                path: 'mainView',
+                                element: <DMainView />,
+                                icon: <UserOutlined />,
+                                title: '部门删除管理',
+                                breadcrumbName: '部门删除管理',
+                                show: true,
                             },
                         ]
                     },
@@ -196,5 +240,6 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/department/departmentView': '现有部门信息',
     '/homeView/department/departmentView/editGroup': '修改小组信息',
     '/homeView/department/addGroupView': '组织新小组',
+    '/homeView/department/addDepartmentView': '创建新部门',
 };
 export default routes

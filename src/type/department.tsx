@@ -1,6 +1,6 @@
-import { message } from "antd"
-import { employe } from "../api"
-import department from "../api/departmentApi"
+import { message, Select } from "antd"
+import { employe, department } from "../api"
+
 // 部门基础信息
 export interface departmentData {
     allDeptInfo: any,
@@ -112,6 +112,7 @@ export const updateHasAva = async (data: any) => {
     }
 
 }
+// 无头像修改
 export const updateNoAva = async (data: any) => {
     const res: any = await department.reqUpdateDepartmentNoAvatar(data)
     if (res.code === 200) {
@@ -124,7 +125,7 @@ export const updateNoAva = async (data: any) => {
 
 }
 
-
+// 修改小组用到的数据
 interface editGroupData {
     groupInfo: [],
     tableData: Array<any>
@@ -156,7 +157,6 @@ export const getGroupByEdit = async (data: editGroupInit, setData: Function, dno
     }
 
 }
-
 // 修改小组数据
 export const updateGroupInfo = async (data: {
     id: number | string, deptname: number | string, location: string, count: number | string
@@ -167,6 +167,105 @@ export const updateGroupInfo = async (data: {
         return true
     } else {
         message.error('修改失败！')
+        return false
+    }
+
+}
+
+
+// 组织新部门
+interface RecordType {
+    key: string;
+    title: string;
+    description: string;
+    chosen: boolean;
+}
+interface addGroupDataInterface {
+    // 展示的员工数据
+    employeData: Array<RecordType>,
+    // 选中的员工集合
+    selectEmployes: string[],
+    // 全部部门信息
+    allDeptInfo: [],
+    // 选择部门的option
+    deptSelect: Array<any>,
+    // 步骤条
+    active: number,
+    // 确认信息的表单
+    confirmForm: any,
+    // loading
+    loading: boolean,
+    // 是否添加成功
+    addSuccess: boolean
+}
+export class addGroupDataInit {
+    addGroupData: addGroupDataInterface = {
+        employeData: [],
+        selectEmployes: [],
+        allDeptInfo: [],
+        deptSelect: [],
+        active: 0,
+        confirmForm: [],
+        loading: false,
+        addSuccess: false
+    }
+}
+// 获取全部部门
+const { Option } = Select
+export const getAllDept = async (data: addGroupDataInit, setData: Function) => {
+    const res: any = await department.reqAllDept()
+    if (res.code === 200) {
+        data.addGroupData.allDeptInfo = res.deptInfo
+        data.addGroupData.deptSelect = data.addGroupData.allDeptInfo.map((dept: any) => {
+            return <Option key={dept.dno} >{dept.dname}</Option>
+        })
+        setData({ ...data })
+    } else {
+        message.error('获取部门信息失败')
+    }
+}
+// 获取员工
+export const getEmployeInfo = async (data: addGroupDataInit, setData: Function) => {
+    const res: any = await department.reqGetAllEmploye()
+    if (res.code === 200) {
+        res.employeInfo.map((employe: any) => {
+            const eData = {
+                key: employe.key,
+                title: employe.label,
+                description: `${employe.label}---${employe.key}`,
+                chosen: false
+            };
+            data.addGroupData.employeData.push(eData)
+
+        })
+        setData({ ...data })
+    } else {
+        message.error('获取员工信息失败')
+    }
+}
+
+// 最终提交
+export const addGroup = async (data: addGroupDataInit, setData: Function, confirmData: object) => {
+    const res: any = await department.reqAddGroup(confirmData)
+    if (res.code === 200) {
+        message.success('添加小组成功！')
+        data.addGroupData.active++
+        setData({ ...data })
+        return true
+    } else {
+        message.error('添加小组失败')
+        return false
+    }
+
+}
+
+// 添加部门
+export const addDepartment = async (data: object) => {
+    const res: any = await department.reqAddDepartment(data)
+    if (res.code === 200) {
+        return true
+    } else {
+        message.error('添加部门失败!')
         return false
     }
 
