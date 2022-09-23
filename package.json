@@ -13,9 +13,11 @@
     "antd": "^4.22.8",
     "axios": "^0.27.2",
     "craco-antd": "^2.0.0",
+    "echarts": "^5.3.3",
     "nprogress": "^0.2.0",
     "pubsub-js": "^1.9.4",
     "react": "^18.2.0",
+    "react-countup": "^6.3.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
@@ -32,7 +34,13 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-undef": "off",
+      "no-restricted-globals": "off",
+      "no-unused-vars": "off",
+      "no-unused-expressions": "off"
+    }
   },
   "browserslist": {
     "production": [

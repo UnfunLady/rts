@@ -11,7 +11,7 @@ import { mainViewDataInit, getMenuNodes } from '../../type/mainView';
 import { MenuFoldOutlined, MenuUnfoldOutlined, } from '@ant-design/icons';
 import './index.less'
 import { breadcrumbNameMap } from '../../router';
-
+import PubSub from 'pubsub-js'
 const { Header, Sider, Content } = Layout;
 type Props = {
 }
@@ -63,6 +63,13 @@ const MainView = (props: Props) => {
 
         data.mainViewData.defaultPath = activePath
         setData({ ...data })
+        // 订阅方法
+        PubSub.subscribe('reloadRouter', reloadRouter)
+
+        return () => {
+            PubSub.clearAllSubscriptions()
+        }
+
     }, [location.pathname])
 
     // 修改合并阀门 控制菜单是否合并
@@ -89,7 +96,16 @@ const MainView = (props: Props) => {
 
         setData({ ...data })
     }
-
+    // 控制outlet显示和隐藏
+    const [isAlive, setAlive] = useState(true)
+    const reloadRouter = () => {
+        // 不显示路由
+        setAlive(false)
+        // 随后显示刷新 比location.reload 和router.go(0) 效果会好一点
+        setTimeout(() => {
+            setAlive(true)
+        }, 10)
+    }
     return (
         <Layout>
             <Sider collapsed={data.mainViewData.isClose}>
@@ -122,7 +138,7 @@ const MainView = (props: Props) => {
                     </div>
                 </Header>
                 <Content>
-                    <Outlet />
+                    {isAlive ? <Outlet /> : ''}
                 </Content>
             </Layout>
         </Layout>

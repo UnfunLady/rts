@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import { MenuOutlined, SolutionOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
+import { MenuOutlined, SolutionOutlined, SafetyOutlined, AreaChartOutlined, InsuranceOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
 import HomeView from '../views/HomeView'
 import MainView from '../views/MainView'
 import EmployeView from '../views/EmployeView'
@@ -14,6 +14,9 @@ import AddGroupView from '../views/DepartmentView/AddGroupView'
 import AddDepartmentView from '../views/DepartmentView/AddDepartmentView';
 import DeleteDepartmentView from '../views/DepartmentView/DeleteDepartmentView';
 import DMainView from '../views/DepartmentView/DeleteDepartmentView/MainView'
+import EvilControl from '../views/EvilControl';
+import ChinaInfo from '../views/EvilControl/ChinaInfo';
+import CompanyInfo from '../views/EvilControl/CompanyInfo';
 // const HomeView = lazy(() => import('../views/HomeView'))
 // const MainView = lazy(() => import('../views/MainView'))
 // const EmployeView = lazy(() => import('../views/EmployeView'))
@@ -71,6 +74,15 @@ const routes: any = [
         element: (
             <>
                 <Navigate to="/homeView/department/deleteDepartmentView/mainView" />
+            </>
+        ),
+    },
+    {
+        path: '/homeView/evilControl',
+        show: false,
+        element: (
+            <>
+                <Navigate to="/homeView/evilControl/chinaInfo" />
             </>
         ),
     },
@@ -218,7 +230,32 @@ const routes: any = [
                     },
                 ]
             },
-
+            {
+                path: 'evilControl',
+                element: <EvilControl />,
+                title: '疫情防控',
+                breadcrumbName: '疫情防控',
+                icon: <SafetyOutlined />,
+                show: true,
+                children: [
+                    {
+                        path: 'chinaInfo',
+                        element: <ChinaInfo />,
+                        title: '全国疫情信息',
+                        breadcrumbName: '全国疫情信息',
+                        icon: <AreaChartOutlined />,
+                        show: true,
+                    },
+                    {
+                        path: 'companyInfo',
+                        element: <CompanyInfo />,
+                        title: '公司防控信息',
+                        breadcrumbName: '公司防控信息',
+                        icon: <InsuranceOutlined />,
+                        show: true,
+                    }
+                ]
+            }
         ]
     },
     {
@@ -241,5 +278,6 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/department/departmentView/editGroup': '修改小组信息',
     '/homeView/department/addGroupView': '组织新小组',
     '/homeView/department/addDepartmentView': '创建新部门',
+    '/homeView/evilControl': '疫情防控',
 };
 export default routes
