@@ -270,3 +270,76 @@ export const addDepartment = async (data: object) => {
     }
 
 }
+
+// 删除部门相关
+interface deleteDepartmentType {
+    allDept: []
+    tableData: Array<any>
+}
+export class delDepartmentInit {
+    initData: deleteDepartmentType = {
+        allDept: [],
+        tableData: [],
+    }
+}
+// 获取部门信息
+export const getDept = async (data: delDepartmentInit, setData: Function) => {
+    const res: any = await department.reqAllDept()
+    if (res.code === 200) {
+        // 遍历团队  把团队添加到所属部门
+        res.deptInfo.forEach((item: any, index: number) => {
+            // 给每个部门定义一个children数组
+            item.children = []
+            // 遍历所有子小组
+            res.groupInfo.forEach((child: any) => {
+                // 如果符合条件就添加进去
+                if (item.dno === child.deptno) {
+                    item.children.push(child)
+                }
+            })
+        })
+        data.initData.allDept = res.deptInfo
+        data.initData.tableData = data.initData.allDept.map((dept: any) => {
+            return {
+                key: dept.dno,
+                dno: dept.dno,
+                avatar: dept.avatar,
+                dname: dept.dname,
+                count: dept.count,
+                childrenCount: dept.children.length,
+                childrenData: dept.children
+            }
+        })
+        setData({ ...data })
+    } else {
+        message.error('获取部门信息失败')
+    }
+
+}
+
+
+// 解散小组
+export const delGroup = async (data: object) => {
+    const res: any = await department.delGroup(data)
+    if (res.code === 200) {
+        message.success('解散小组成功！')
+
+        return true
+    } else {
+        message.error('解散小组失败')
+        return false
+
+    }
+}
+
+// 解散部门
+export const confirmDelDepartment = async (data: object) => {
+    const res: any = await department.delDept(data)
+    if (res.code === 200) {
+        message.success('解散小组成功！')
+        return true
+    } else {
+        return false
+        message.error('解散小组失败!')
+    }
+}

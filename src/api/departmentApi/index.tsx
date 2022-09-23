@@ -30,8 +30,17 @@ const reqGetAllEmploye = () => {
 const reqAddGroup = (data: any) => {
     return request({ url: '/addGroup', method: 'post', data })
 }
+// 新增部门
 const reqAddDepartment = (data: any) => {
     return request({ url: '/addDeptpartmentR', method: 'post', data })
+}
+// 解散小组
+const delGroup = (data: any) => {
+    return request({ url: '/delGroup', method: 'post', data })
+}
+// 解散部门
+const delDept = (data: any) => {
+    return request({ url: '/delDept', method: 'post', data })
 }
 const department = {
     reqUpdateDepartmentAvatar,
@@ -41,6 +50,8 @@ const department = {
     reqGetAllEmploye,
     reqAllDept,
     reqAddGroup,
-    reqAddDepartment
+    reqAddDepartment,
+    delGroup,
+    delDept
 }
 export default department

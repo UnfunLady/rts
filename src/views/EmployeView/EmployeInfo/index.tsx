@@ -25,6 +25,7 @@ const EmployeInfo: FC = () => {
         // 获取省份
         getAllProvinceAndCityList(data, setData)
         if (location.state !== null) {
+            console.log(location.state);
             data.initData.selectForm.dno = location.state.dno.toString()
             getAllDept(data, setData)
             data.initData.selectForm.deptId = location.state.deptId.toString()
@@ -256,6 +257,7 @@ const EmployeInfo: FC = () => {
                 showTotal={total => `Total ${total} items`}
                 defaultPageSize={8}
                 pageSizeOptions={[8, 10, 15]}
+                disabled={data.initData.selectForm.dno === "" || data.initData.selectForm.deptId === ""}
                 onChange={pageChange}
             />
             <Empty
