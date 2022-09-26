@@ -17,6 +17,7 @@ import DMainView from '../views/DepartmentView/DeleteDepartmentView/MainView'
 import EvilControl from '../views/EvilControl';
 import ChinaInfo from '../views/EvilControl/ChinaInfo';
 import CompanyInfo from '../views/EvilControl/CompanyInfo';
+import ShowNoCovid from '../views/EvilControl/ShowNoCovid';
 // const HomeView = lazy(() => import('../views/HomeView'))
 // const MainView = lazy(() => import('../views/MainView'))
 // const EmployeView = lazy(() => import('../views/EmployeView'))
@@ -253,6 +254,19 @@ const routes: any = [
                         breadcrumbName: '公司防控信息',
                         icon: <InsuranceOutlined />,
                         show: true,
+                        children: [
+
+                        ]
+                    },
+                    {
+
+                        path: 'showNoCovid',
+                        element: <ShowNoCovid />,
+                        title: '相关员工信息',
+                        breadcrumbName: '相关员工信息',
+                        icon: <InsuranceOutlined />,
+                        show: false,
+                        activePath: '/homeView/evilControl/companyInfo',
                     }
                 ]
             }
@@ -279,5 +293,8 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/department/addGroupView': '组织新小组',
     '/homeView/department/addDepartmentView': '创建新部门',
     '/homeView/evilControl': '疫情防控',
+    '/homeView/evilControl/chinaInfo': '全国疫情信息',
+    '/homeView/evilControl/companyInfo': '公司疫情信息',
+    '/homeView/evilControl/showNoCovid': '相关员工信息',
 };
 export default routes

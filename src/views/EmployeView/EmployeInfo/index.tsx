@@ -246,7 +246,7 @@ const EmployeInfo: FC = () => {
                     <Button size='large' style={{ marginBottom: '15px', borderRadius: '3px' }} type="primary" icon={<PlusOutlined />} onClick={addNewEmploye}>
                         添加员工
                     </Button>
-                    <Table pagination={false} bordered={true} columns={columns} dataSource={data.initData.tableDatas} size="small" />
+                    <Table pagination={false} bordered={true} columns={columns} dataSource={data.initData.tableDatas} />
                 </div>
             </Card>
             <Pagination

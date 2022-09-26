@@ -1,10 +1,40 @@
-import React, { FC } from 'react';
-
+import React, { FC, useEffect, useState } from 'react';
+import { indexViewDataInit, getOneChart, getTwoChart, getCompanyDetail } from '../../type/indexView';
+import './index.less'
+import CountUp from "react-countup";
 const Main: FC = () => {
+  const [data, setData] = useState(new indexViewDataInit())
+  useEffect(() => {
+    getOneChart(document.querySelector('.one'))
+    getTwoChart(document.querySelector('.two'))
+    getCompanyDetail(data, setData)
+  }, [])
   return (
     <div className="Main" style={{ margin: "30px" }}>
-      TODO 主页
-    </div>
+      <div className="father">
+        <div id="one" className="one"></div>
+        <div id="two" className="two"></div>
+        <div id="three" className="three">
+          {
+            data.mainViewData.showData.map((show: any) => {
+              return (
+                <div className="cardPic" key={show.id}>
+                  <div className="number" style={{ color: show.color }}>
+                    {
+                      Number(show.num) ? <CountUp start={0} end={show.num} separator="," duration={2} /> :
+                        <span>{show.num}</span>
+                    }
+                  </div>
+                  <div>
+                    <span style={{ color: "gray", fontSize: "18px" }}>{show.title}</span>
+                  </div>
+                </div>
+              )
+            })
+          }
+        </div >
+      </div >
+    </div >
   );
 }
 

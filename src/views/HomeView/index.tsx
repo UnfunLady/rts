@@ -27,6 +27,10 @@ const MainView = (props: Props) => {
     const routesList = routes.filter((r: any) => {
         if (r.show && r.show === true) {
             return r
+        } else {
+            if (r.activePath) {
+                return r
+            }
         }
     })
     // 面包屑arr 
@@ -44,28 +48,43 @@ const MainView = (props: Props) => {
 
         return extraBreadcrumbItems
     }
+    // 递归筛选路由属性带有activePath的路由用于修改默认选中路径
+    const checkActivePath = (routerList: any, locationName: Array<any>) => {
+        routerList.map((route: any) => {
+            if (route.children) {
+                // 递归循环直到当前激活的路由
+                return checkActivePath(route.children, locationName)
+            } else {
+                // 当前激活路由判断是否有activePath
+                if (route.activePath && route.activePath.length > 0) {
+                    if (route.path === locationName[locationName.length - 1]) {
+                        data.mainViewData.defaultPath = route.activePath.split('/')
+                        setData({ ...data })
+                    }
+                } else {
+                    //   三级四级路由
+                    switch (locationName.length) {
+                        case 4:
+                            data.mainViewData.OpenKeys = locationName.slice(0, 3)
+                            break;
+                        case 5:
+                            data.mainViewData.OpenKeys = locationName.slice(0, 4)
+                            break;
+                    }
+                    data.mainViewData.defaultPath = locationName
+                    setData({ ...data })
+                }
+            }
+        })
+    }
     useEffect(() => {
         // 初始化路由菜单
         data.mainViewData.menuList = getMenuNodes(routesList as [])
-        // 刷新的时候获取默认路径
-        const activePath: string[] = location.pathname.split('/')
-        //   三级四级
-        switch (activePath.length) {
-            case 4:
-
-                data.mainViewData.OpenKeys = activePath.slice(0, 3)
-                break;
-            case 5:
-
-                data.mainViewData.OpenKeys = activePath.slice(0, 4)
-                break;
-        }
-
-        data.mainViewData.defaultPath = activePath
+        // 递归筛选路由属性带有activePath的路由用于修改默认选中路径
+        checkActivePath(routesList, location.pathname.split('/'))
         setData({ ...data })
-        // 订阅方法
+        // 重置路由的方法  用于全国疫情配合下文的outlet刷新路由
         PubSub.subscribe('reloadRouter', reloadRouter)
-
         return () => {
             PubSub.clearAllSubscriptions()
         }
@@ -79,6 +98,7 @@ const MainView = (props: Props) => {
     }
     // 跳转路由
     const onClick: MenuProps['onClick'] = e => {
+
         // 修改默认选中菜单
         data.mainViewData.defaultPath = e.keyPath
         setData({ ...data })
@@ -93,7 +113,6 @@ const MainView = (props: Props) => {
     };
     const onOpenChange = (openKeys: string[]) => {
         data.mainViewData.OpenKeys = openKeys
-
         setData({ ...data })
     }
     // 控制outlet显示和隐藏
@@ -110,6 +129,7 @@ const MainView = (props: Props) => {
         <Layout>
             <Sider collapsed={data.mainViewData.isClose}>
                 <Menu
+
                     onClick={onClick}
                     // 默认初始选中
                     selectedKeys={data.mainViewData.defaultPath.length > 0 ? data.mainViewData.defaultPath : location.pathname.split('/')}

@@ -238,3 +238,134 @@ export const getAllEvilInfo = async (data: chinaInfoInit, setData: Function) => 
         message.error('获取信息失败！')
     }
 }
+
+// 公司疫情信息
+type companyInfo = {
+    allDeptInfo: []
+}
+export class companyInfoInit {
+    companyData: companyInfo = {
+        allDeptInfo: []
+    }
+}
+// 获取部门数据
+export const getCompanyEvilInfo = async (data: companyInfoInit, setData: Function) => {
+    const res: any = await evilControl.reqGetCompanyEvilInfo()
+    if (res.code === 200) {
+        data.companyData.allDeptInfo = res.deptInfo;
+        setData({ ...data })
+    } else {
+        message.error('获取部门信息失败!')
+    }
+
+}
+// 员工相关信息
+type evilEmployeInfo = {
+    // 员工相关信息
+    employeInfo: [],
+    allEmployeInfo: [],
+    page: number | string,
+    size: number | string,
+    someCount: number,
+    allCount: number,
+    isAllEmploye: boolean,
+    evilTableData: Array<any>,
+    allTableData: Array<any>,
+    justCheck: boolean,
+    dialogTableVisible: boolean,
+    updateForm: {}
+}
+export class evilEmployeInfoInit {
+    employeData: evilEmployeInfo = {
+        employeInfo: [],
+        allEmployeInfo: [],
+        page: 1,
+        size: 8,
+        someCount: 0,
+        evilTableData: [],
+        allTableData: [],
+        allCount: 0,
+        isAllEmploye: false,
+        justCheck: false,
+        dialogTableVisible: false,
+        updateForm: {}
+    }
+}
+// 获取员工数据
+export const getEvilEmployeInfo = async (data: evilEmployeInfoInit, setData: Function, params: Object) => {
+    const res: any = await evilControl.reqGetEmployeEvilInfo(params)
+    if (res.code === 200) {
+        // 合并数据
+        data.employeData.employeInfo = res.employeInfo.map(
+            (item: object, index: number) => {
+                return { ...item, ...res.evilInfo[index] };
+            }
+        );
+        data.employeData.someCount = res.evilCount;
+        // 表格数据
+        data.employeData.evilTableData = data.employeData.employeInfo.map((employe: any) => {
+            return {
+                key: employe.employno,
+                depallid: employe.depallid,
+                deptid: employe.deptid,
+                employno: employe.employno,
+                employname: employe.employname,
+                employsex: employe.employsex,
+                employphone: employe.employphone,
+                firstInoculation: employe.firstInoculation,
+                secondInoculation: employe.secondInoculation,
+                threeInoculation: employe.threeInoculation
+
+            }
+        })
+        setData({ ...data })
+    } else {
+        message.error('获取员工信息失败!')
+    }
+}
+// 获取全部部门员工
+export const getAllInfo = async (data: evilEmployeInfoInit, setData: Function, params: object) => {
+    // 如果是第一次获取就获取全部
+    if (data.employeData.isAllEmploye) {
+        const res: any = await evilControl.reqGetAllEmployeEvilInfo(params)
+        if (res.code === 200) {
+            data.employeData.allEmployeInfo = res.allEmployeEvilInfo;
+            data.employeData.allCount = res.count;
+        }
+        data.employeData.allTableData = data.employeData.allEmployeInfo.map((employe: any) => {
+            return {
+                key: employe.employno,
+                depallid: employe.depallid,
+                deptid: employe.deptid,
+                employno: employe.employno,
+                employname: employe.employname,
+                employsex: employe.employsex,
+                employphone: employe.employphone,
+                firstInoculation: employe.firstInoculation,
+                secondInoculation: employe.secondInoculation,
+                threeInoculation: employe.threeInoculation
+
+            }
+        })
+        setData({ ...data })
+    }
+}
+// 修改数据
+export const updateEvilEmployeInfo = async (data: evilEmployeInfoInit, setData: Function, updateData: Object, resetData: object) => {
+    console.log(updateData);
+
+    const res: any = await evilControl.reqUpdateEmployeEvilInfo(updateData);
+    if (res.code === 200) {
+        message.success('修改信息成功!')
+        data.employeData.dialogTableVisible = false
+        // 重置信息
+        if (data.employeData.isAllEmploye) {
+            getAllInfo(data, setData, resetData)
+        } else {
+            getEvilEmployeInfo(data, setData, resetData)
+        }
+        setData({ ...data })
+    } else {
+        message.error('修改信息失败!')
+    }
+}
