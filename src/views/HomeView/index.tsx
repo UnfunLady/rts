@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react'
 import routes from '../../router'
 // 引入location获取路径
 import { useLocation, useNavigate, Outlet, Link } from 'react-router-dom';
-import { Layout, Col, Row, Breadcrumb, Button, Menu } from 'antd';
+import { Layout, Col, Row, Dropdown, Breadcrumb, Button, Menu, Avatar } from 'antd';
 // 引入type数据
 import type { MenuProps } from 'antd'
 import { mainViewDataInit, getMenuNodes } from '../../type/mainView';
-import { MenuFoldOutlined, MenuUnfoldOutlined, } from '@ant-design/icons';
+import { MenuFoldOutlined, MenuUnfoldOutlined, DownOutlined } from '@ant-design/icons';
 import './index.less'
 import { breadcrumbNameMap } from '../../router';
 import PubSub from 'pubsub-js'
@@ -125,6 +125,39 @@ const MainView = (props: Props) => {
             setAlive(true)
         }, 10)
     }
+
+
+    // 用户信息相关
+    // 菜单
+    const menu = (
+        <Menu
+            items={[
+                {
+                    label: (
+                        <span>我的信息</span>
+                    ),
+                    key: '0',
+                },
+                {
+                    label: (
+                        <span>修改密码</span>
+                    ),
+                    key: '1',
+                },
+                {
+                    label: (
+                        <span>退出登录</span>
+                    ),
+                    key: '2',
+                },
+            ]}
+        />
+    );
+
+
+
+
+
     return (
         <Layout>
             <Sider collapsed={data.mainViewData.isClose}>
@@ -152,8 +185,16 @@ const MainView = (props: Props) => {
                             <Col span={8} >
                                 <Breadcrumb >{breadCrumbCheck()}</Breadcrumb>
                             </Col>
-                            <Col span={8} >3</Col>
-                            <Col span={3} >4</Col>
+                            <Col span={11} ></Col>
+                            <Col span={3} >
+                                <Dropdown overlay={menu}>
+                                    <div className='userInfo'>
+                                        <Avatar />
+                                        <span>UnfunLady</span>
+                                        <DownOutlined />
+                                    </div>
+                                </Dropdown>
+                            </Col>
                         </Row>
                     </div>
                 </Header>

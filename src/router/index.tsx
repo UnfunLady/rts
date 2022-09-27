@@ -18,6 +18,7 @@ import EvilControl from '../views/EvilControl';
 import ChinaInfo from '../views/EvilControl/ChinaInfo';
 import CompanyInfo from '../views/EvilControl/CompanyInfo';
 import ShowNoCovid from '../views/EvilControl/ShowNoCovid';
+import LoginView from '../views/LoginView';
 // const HomeView = lazy(() => import('../views/HomeView'))
 // const MainView = lazy(() => import('../views/MainView'))
 // const EmployeView = lazy(() => import('../views/EmployeView'))
@@ -275,6 +276,11 @@ const routes: any = [
     {
         path: '/',
         element: <Navigate to="/homeView/mainView" />,
+        show: false
+    },
+    {
+        path: '/loginView',
+        element: <LoginView />,
         show: false
     }
 ]

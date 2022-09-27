@@ -2,6 +2,7 @@ import axios from "axios";
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css';
 import { message } from 'antd'
+import { store } from "../store/store";
 enum MSGS {
     // 自动递增
     '请求操作成功!' = 200,
@@ -15,14 +16,17 @@ const request = axios.create({
     timeout: 5000,
     headers: {
         "Content-Type": "application/json;charset=utf-8",
-        
+
     }
 })
 
-
 request.interceptors.request.use(config => {
     nprogress.start()
-    config.headers = config.headers || {};
+    config.headers = config.headers || {}
+    const userToken = store.getState().user.userList.userToken
+    if (userToken && userToken !== '') {
+        config.headers.token = userToken
+    }
     return config
 })
 request.interceptors.response.use(res => {
@@ -44,6 +48,7 @@ request.interceptors.response.use(res => {
         }
     }
 }, err => {
+    console.log(err);
     message.error(
         '请求失败!'
     )

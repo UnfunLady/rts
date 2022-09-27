@@ -1,10 +1,11 @@
 .ant-layout {
     min-height: calc(100vh);
 
- 
-.ant-layout-content{
-    background-color: rgba(255, 255, 255, 0.69);
-}
+
+    .ant-layout-content {
+        background-color: rgba(255, 255, 255, 0.69);
+    }
+
     .ant-layout-sider {
         background-color: #476080 !important;
         transition: .6s;
@@ -88,5 +89,15 @@
 &.base-menu:not(.ant-menu-inline-collapsed) {
     .ant-menu-submenu-popup {
         display: none;
+    }
+}
+
+.userInfo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    span {
+        margin-left: 10px;
     }
 }
