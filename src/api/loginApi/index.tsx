@@ -7,7 +7,15 @@ interface loginData {
 const reqUserLogin = (data: loginData) => {
     return request({ url: '/login', method: 'post', data })
 }
-const loginApi = {
-    reqUserLogin
+// 修改密码
+const editPassword = (data: object) => {
+    return request({
+        url: '/editPassword', data, method: 'post'
+    })
 }
+const loginApi = {
+    reqUserLogin,
+    editPassword
+}
+
 export default loginApi

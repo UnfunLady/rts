@@ -24,7 +24,7 @@ export default function LoginView() {
             }
         }).catch(err => {
             console.log(err);
-            message.warning('用户名或密码不能为空！')
+            message.warning(err.msg ? err.msg : '用户名或密码不能为空！')
         })
     }
     return (

@@ -7,3 +7,6 @@ export const setToken = (data: any) => {
 export const setUserInfo = (data: any) => {
     return { type: SETUSERINFO, data }
 }
+export const userOut = (data: any) => {
+    return { type: USEROUT, data }
+}

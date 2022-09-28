@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, Route, useLocation } from 'react-router-dom'
 import { MenuOutlined, SolutionOutlined, SafetyOutlined, AreaChartOutlined, InsuranceOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
 import HomeView from '../views/HomeView'
 import MainView from '../views/MainView'
@@ -19,23 +19,13 @@ import ChinaInfo from '../views/EvilControl/ChinaInfo';
 import CompanyInfo from '../views/EvilControl/CompanyInfo';
 import ShowNoCovid from '../views/EvilControl/ShowNoCovid';
 import LoginView from '../views/LoginView';
-// const HomeView = lazy(() => import('../views/HomeView'))
-// const MainView = lazy(() => import('../views/MainView'))
-// const EmployeView = lazy(() => import('../views/EmployeView'))
-// const EmployeInfo = lazy(() => import('../views/EmployeView/EmployeInfo'))
-// type Route = {
-//     path: string,
-//     element: React.ReactNode,
-//     icon?: React.ReactNode,
-//     title?: string,
-//     children?: Array<Route>,
-//     [propName: string]: any
-// }
+import NotFound from '../component/404NotFoundView';
 const routes: any = [
     //重定向
     {
         path: '/homeView',
         show: false,
+        auth: true,
         element: (
             <>
                 <Navigate to="/homeView/mainView" />
@@ -45,6 +35,7 @@ const routes: any = [
     {
         path: '/homeView/employeView',
         show: false,
+        auth: true,
         element: (
             <>
                 <Navigate to="/homeView/employeView/employeInfo" />
@@ -54,6 +45,7 @@ const routes: any = [
     {
         path: '/homeView/employeView/employeSalary',
         show: false,
+        auth: true,
         element: (
             <>
                 <Navigate to="/homeView/employeView/employeSalary/salaryIndexView" />
@@ -64,6 +56,7 @@ const routes: any = [
     {
         path: '/homeView/department',
         show: false,
+        auth: true,
         element: (
             <>
                 <Navigate to="/homeView/department/departmentView" />
@@ -73,6 +66,7 @@ const routes: any = [
     {
         path: '/homeView/department/deleteDepartmentView',
         show: false,
+        auth: true,
         element: (
             <>
                 <Navigate to="/homeView/department/deleteDepartmentView/mainView" />
@@ -82,6 +76,7 @@ const routes: any = [
     {
         path: '/homeView/evilControl',
         show: false,
+        auth: true,
         element: (
             <>
                 <Navigate to="/homeView/evilControl/chinaInfo" />
@@ -101,17 +96,21 @@ const routes: any = [
         icon: <MenuOutlined />,
         showChildren: true,
         show: true,
+        auth: true,
         children: [
             {
                 path: 'mainView',
+                absolutePath: '/homeView/mainView',
                 element: <MainView />,
                 title: '首页信息',
                 breadcrumbName: '首页信息',
                 icon: <AppstoreOutlined />,
-                show: true
+                show: true,
+                auth: true,
             },
             {
                 path: 'employeView',
+                absolutePath: '/homeView/employeView',
                 element: (
                     <EmployeView />
                 ),
@@ -119,46 +118,57 @@ const routes: any = [
                 title: '员工菜单',
                 breadcrumbName: '员工菜单',
                 show: true,
+                auth: true,
                 children: [
                     {
                         path: 'employeInfo',
+                        absolutePath: '/homeView/employeView/employeInfo',
                         element: <EmployeInfo />,
                         icon: <UserOutlined />,
                         title: '员工管理',
                         breadcrumbName: '员工管理',
                         show: true,
+                        auth: true,
                     },
                     {
                         path: 'employeSalary',
+                        absolutePath: '/homeView/employeView/employeSalary',
                         element: <EmployeSalary />,
                         icon: <MoneyCollectOutlined />,
                         title: '薪资管理',
                         breadcrumbName: '薪资管理',
                         show: true,
+                        auth: true,
                         children: [
                             {
                                 path: 'salaryIndexView',
+                                absolutePath: '/homeView/employeView/employeSalary/salaryIndexView',
                                 element: <SalaryIndexView />,
                                 icon: <UserOutlined />,
                                 title: '部门薪资管理',
                                 breadcrumbName: '部门薪资管理',
                                 show: true,
+                                auth: true,
                             },
                             {
                                 path: 'departmentSalaryDetail',
+                                absolutePath: '/homeView/employeView/employeSalary/departmentSalaryDetail',
                                 element: <DepartmentSalaryDetail />,
                                 icon: <UserOutlined />,
                                 title: '部门薪资管理',
                                 breadcrumbName: '部门薪资管理',
                                 show: true,
+                                auth: true,
                             },
                             {
                                 path: 'employeDetailView',
+                                absolutePath: '/homeView/employeView/employeSalary/employeDetailView',
                                 element: <EmployeDetailView />,
                                 icon: <UserOutlined />,
                                 title: '员工工资明细',
                                 breadcrumbName: '员工工资明细',
                                 show: true,
+                                auth: true,
                             },
                         ]
                     },
@@ -166,67 +176,64 @@ const routes: any = [
             },
             {
                 path: 'department',
+                absolutePath: '/homeView/department',
                 element: <DepartmentView />,
                 title: '部门菜单',
                 breadcrumbName: '部门菜单',
                 icon: <HomeOutlined />,
                 show: true,
+                auth: true,
                 children: [
                     {
                         path: 'departmentView',
+                        absolutePath: '/homeView/department/departmentView',
                         element: <DepartmentEditView />,
                         title: '现有部门信息',
                         breadcrumbName: '现有部门信息',
                         icon: <SolutionOutlined />,
                         show: true,
-                        children: [
-                            {
-
-                            },
-                        ]
+                        auth: true,
                     },
                     {
                         path: 'addGroupView',
+                        absolutePath: '/homeView/department/addGroupView',
                         element: <AddGroupView />,
                         title: '组织新小组',
                         breadcrumbName: '组织新小组',
                         icon: <BlockOutlined />,
                         show: true,
-                        children: [
-                            {
-
-                            },
-                        ]
+                        auth: true,
                     },
                     {
                         path: 'addDepartmentView',
+                        absolutePath: '/homeView/department/addDepartmentView',
                         element: <AddDepartmentView />,
                         title: '创建新部门',
                         breadcrumbName: '创建新部门',
                         icon: <DatabaseOutlined />,
                         show: true,
-                        children: [
-                            {
-
-                            },
-                        ]
+                        auth: true,
                     },
 
                     {
                         path: 'deleteDepartmentView',
+                        absolutePath: '/homeView/department/deleteDepartmentView',
                         element: <DeleteDepartmentView />,
                         title: '解散部门或小组',
                         breadcrumbName: '解散部门或小组',
                         icon: <DeleteOutlined />,
                         show: true,
+                        auth: true,
                         children: [
                             {
                                 path: 'mainView',
+                                absolutePath: '/homeView/department/deleteDepartmentView/mainView',
                                 element: <DMainView />,
                                 icon: <UserOutlined />,
                                 title: '部门删除管理',
                                 breadcrumbName: '部门删除管理',
                                 show: true,
+                                auth: true,
                             },
                         ]
                     },
@@ -234,27 +241,33 @@ const routes: any = [
             },
             {
                 path: 'evilControl',
+                absolutePath: '/homeView/evilControl',
                 element: <EvilControl />,
                 title: '疫情防控',
                 breadcrumbName: '疫情防控',
                 icon: <SafetyOutlined />,
-                show: true,
+                show: false,
+                auth: true,
                 children: [
                     {
                         path: 'chinaInfo',
+                        absolutePath: '/homeView/evilControl/chinaInfo',
                         element: <ChinaInfo />,
                         title: '全国疫情信息',
                         breadcrumbName: '全国疫情信息',
                         icon: <AreaChartOutlined />,
                         show: true,
+                        auth: true,
                     },
                     {
                         path: 'companyInfo',
+                        absolutePath: '/homeView/evilControl/companyInfo',
                         element: <CompanyInfo />,
                         title: '公司防控信息',
                         breadcrumbName: '公司防控信息',
                         icon: <InsuranceOutlined />,
                         show: true,
+                        auth: true,
                         children: [
 
                         ]
@@ -262,11 +275,13 @@ const routes: any = [
                     {
 
                         path: 'showNoCovid',
+                        absolutePath: '/homeView/evilControl/showNoCovid',
                         element: <ShowNoCovid />,
                         title: '相关员工信息',
                         breadcrumbName: '相关员工信息',
                         icon: <InsuranceOutlined />,
                         show: false,
+                        auth: true,
                         activePath: '/homeView/evilControl/companyInfo',
                     }
                 ]
@@ -276,14 +291,25 @@ const routes: any = [
     {
         path: '/',
         element: <Navigate to="/homeView/mainView" />,
-        show: false
+        show: false,
+        auth: true,
     },
     {
         path: '/loginView',
         element: <LoginView />,
+        auth: false,
+        show: false
+    },
+    // 404
+    {
+        path: '*',
+        element: <NotFound />,
+        auth: false,
         show: false
     }
 ]
+
+
 export const breadcrumbNameMap: Record<string, string> = {
     '/homeView': '首页',
     '/homeView/mainView': '首页信息',

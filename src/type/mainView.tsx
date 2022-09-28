@@ -1,4 +1,5 @@
-import type { MenuProps } from 'antd';
+import { MenuProps, message } from 'antd';
+import { loginView } from '../api'
 type MenuItem = Required<MenuProps>['items'][number];
 export interface mainViewData {
     menuList: [],
@@ -55,7 +56,6 @@ export const getMenuNodes = (menuList: MenuItem[]) => {
             if (item.show) {
                 // console.log('item.show', item);
             }
-
             return (
                 item.show ?
                     getItem(item.title, item.path, item.icon) : null
@@ -64,4 +64,17 @@ export const getMenuNodes = (menuList: MenuItem[]) => {
     })
 
     return finalResult
+}
+
+
+// 修改密码
+export const updatePassword = async (data: object) => {
+    const res: any = await loginView.editPassword(data)
+    if (res.code === 200) {
+        message.success('修改密码成功请重新登录！')
+        return true
+    } else {
+        message.error('修改密码失败！')
+        return false
+    }
 }

@@ -1,15 +1,20 @@
 import { Button, Card } from 'antd'
 import React, { useState, useEffect, useReducer } from 'react'
 import Header from '../../../component/Header'
-import { chinaInfoInit, getAllEvilInfo, chart } from '../../../type/evilControl'
+import { chinaInfoInit, getAllEvilInfo, getSavedAllEvilInfo, timestampToTime } from '../../../type/evilControl'
 import { ClockCircleOutlined } from '@ant-design/icons'
 import CountUp from "react-countup";
 import './index.less'
 import PubSub from 'pubsub-js'
+import { useDispatch, useSelector } from 'react-redux'
 export default function ChinaInfo() {
     const [data, setData] = useState(new chinaInfoInit())
     // 无任何意义 只用于强制刷新
     // const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+    const evilData = useSelector((state: any) => {
+        return state.evilControl.evilControlData.evilDataInfo.evilData
+    })
+    const dispatch = useDispatch()
     useEffect(() => {
         // 初始化
         // 置空图表
@@ -18,7 +23,13 @@ export default function ChinaInfo() {
             countData: [],
             moreData: []
         }
-        getAllEvilInfo(data, setData)
+        // 如果缓存了全国疫情信息
+        if (evilData.length !== 0) {
+            getSavedAllEvilInfo(data, setData, evilData)
+        } else {
+            getAllEvilInfo(data, setData, dispatch)
+        }
+
     }, [])
     const getNewInfo = () => {
         data.chinaInfo.echarts.xData = []
@@ -27,7 +38,7 @@ export default function ChinaInfo() {
             moreData: []
         }
         setData({ ...data })
-        getAllEvilInfo(data, setData)
+        getAllEvilInfo(data, setData, dispatch)
         // forceUpdate()
         PubSub.publish('reloadRouter')
     }

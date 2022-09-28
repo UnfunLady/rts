@@ -24,7 +24,9 @@ export default function userLoginControl(preState = new userInit(), action: any)
             preState.userList.userInfo = data.Info
             // localStorage.setItem('userInfo', JSON.stringify(preState))
             return { ...preState }
-
+        case USEROUT:
+            preState = new userInit()
+            return { ...preState }
         default:
             return preState
     }

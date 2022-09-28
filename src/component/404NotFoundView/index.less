@@ -1,0 +1,124 @@
+.mainNotFound {
+    overflow: hidden;
+    background-color: #79a0c9be;
+    min-width: 100vw;
+    height: 100vh;
+    position: absolute;
+    z-index: 9999;
+    text-align: center;
+
+    h3 {
+        margin: 0 auto;
+        margin-top: 40px;
+        background: linear-gradient(to right, #f7f7f7, #2e6eb3, #3984d5, #ffffff);
+        background-clip: text;
+        color: transparent;
+        animation: hue 3s linear infinite;
+        font-size: 100px;
+
+    }
+
+    @keyframes hue {
+        0% {
+            filter: hue-rotate(0deg);
+        }
+
+        100% {
+            filter: hue-rotate(360deg);
+        }
+    }
+
+    .wuyuzi {
+        position: absolute;
+        left: 50%;
+        top: 26%;
+        transform: translate(-50%, -50%);
+        z-index: 99999;
+        animation: go 5.5s linear infinite;
+
+
+        img {
+            width: 300px;
+        }
+    }
+
+    @keyframes go {
+        0% {
+            left: 0%;
+        }
+
+        10% {
+            left: 10%
+        }
+
+        20% {
+            left: 20%
+        }
+
+        50% {
+            left: 50%
+        }
+
+        100% {
+            left: 100%;
+        }
+    }
+
+    .one {
+        position: absolute;
+        left: 65%;
+        top: 55%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+
+        img {
+            width: 500px;
+            height: 431px;
+        }
+    }
+
+    .two {
+        position: absolute;
+        left: 35%;
+        top: 55%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+
+        img {
+            width: 500px;
+            height: 431px;
+            z-index: 99999;
+        }
+    }
+
+    .back {
+        position: absolute;
+        left: 50%;
+        top: 75%;
+        transform: translate(-50%, -50%);
+        cursor: pointer !important;
+        z-index: 99999;
+
+        .ant-btn {
+            width: 230px;
+            height: 60px;
+            letter-spacing: 5px;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            box-shadow: 0px 6px 13px 0px #4c4c4c;
+            border: none;
+            margin-bottom: -1px;
+            background: linear-gradient(to right, rgb(114, 106, 106), rgb(87, 87, 108));
+            transition: all .2s !important;
+        }
+
+        .ant-btn:hover {
+
+            border: none;
+            transform: scale(1.05);
+            background: linear-gradient(to right, #6b88ab 30%, rgb(40, 40, 63));
+        }
+    }
+}

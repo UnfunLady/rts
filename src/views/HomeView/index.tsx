@@ -4,14 +4,18 @@ import { useState, useEffect } from 'react'
 import routes from '../../router'
 // 引入location获取路径
 import { useLocation, useNavigate, Outlet, Link } from 'react-router-dom';
-import { Layout, Col, Row, Dropdown, Breadcrumb, Button, Menu, Avatar } from 'antd';
+import { Layout, Col, Row, Dropdown, Breadcrumb, Button, Menu, Avatar, message, Modal, Form, Tag, Input } from 'antd';
 // 引入type数据
 import type { MenuProps } from 'antd'
-import { mainViewDataInit, getMenuNodes } from '../../type/mainView';
+import { mainViewDataInit, getMenuNodes, updatePassword } from '../../type/mainView';
 import { MenuFoldOutlined, MenuUnfoldOutlined, DownOutlined } from '@ant-design/icons';
 import './index.less'
 import { breadcrumbNameMap } from '../../router';
 import PubSub from 'pubsub-js'
+import RouterBeforeEach from '../../util/RouterBeforeEach';
+import { useDispatch, useSelector } from 'react-redux';
+import { USEROUT } from '../../store/constant';
+import { useForm } from 'antd/es/form/Form';
 const { Header, Sider, Content } = Layout;
 type Props = {
 }
@@ -23,6 +27,11 @@ const MainView = (props: Props) => {
     // 路由对象
     const location = useLocation()
     const navitage = useNavigate()
+    const dispatch = useDispatch()
+    const userInfo = useSelector((state: any) => {
+        return state.user.userList.userInfo || {}
+    })
+
     // 过滤路由表
     const routesList = routes.filter((r: any) => {
         if (r.show && r.show === true) {
@@ -128,34 +137,75 @@ const MainView = (props: Props) => {
 
 
     // 用户信息相关
+    // 退出登录
+    const userLogOut = () => {
+        dispatch({ type: USEROUT, data: {} })
+        navitage('/loginView')
+        message.success('退出登录成功!')
+    }
     // 菜单
     const menu = (
         <Menu
             items={[
                 {
                     label: (
-                        <span>我的信息</span>
+                        <span style={{ display: "block", }} onClick={() => setShowInfo(true)}>我的信息</span>
                     ),
                     key: '0',
                 },
                 {
                     label: (
-                        <span>修改密码</span>
+                        <span style={{ display: "block", }} onClick={() => setShowPwd(true)} > 修改密码</span >
                     ),
                     key: '1',
                 },
                 {
                     label: (
-                        <span>退出登录</span>
+                        <span style={{ display: "block", }} onClick={userLogOut}>退出登录</span>
                     ),
                     key: '2',
                 },
             ]}
         />
     );
+    // 修改密码表单
+    const [updatePwdForm] = useForm()
+    // 个人信息
+    const [showInfo, setShowInfo] = useState(false)
+    // 修改密码
+    const [showPwd, setShowPwd] = useState(false)
+    // 取消修改
+    const cancelUpdatePwd = () => {
+        setShowPwd(false)
+        updatePwdForm.resetFields()
+    }
+    // 确定修改密码
+    const updatePwd = () => {
+        updatePwdForm.validateFields().then(async res => {
+            if (res.confirmNewPwd === res.newPwd) {
+                const updateSuccess = await updatePassword({
+                    editInfo: {
+                        nowPassword: res.nowPwd,
+                        newPassword: res.newPwd,
+                    },
+                    user: userInfo.username
+                })
+                if (updateSuccess) {
+                    setShowPwd(false)
+                    updatePwdForm.resetFields()
+                    // 退出登录
+                    dispatch({ type: USEROUT, data: {} })
+                    navitage('/loginView')
+                }
+            } else {
+                message.warn('两次密码输入不一致!')
+            }
 
+        }).catch(err => {
+            message.warning('请按要求输入数据！')
+        })
 
-
+    }
 
 
     return (
@@ -189,8 +239,8 @@ const MainView = (props: Props) => {
                             <Col span={3} >
                                 <Dropdown overlay={menu}>
                                     <div className='userInfo'>
-                                        <Avatar />
-                                        <span>UnfunLady</span>
+                                        <Avatar src={userInfo.avatar} />
+                                        <span>{userInfo.nickname}</span>
                                         <DownOutlined />
                                     </div>
                                 </Dropdown>
@@ -199,10 +249,45 @@ const MainView = (props: Props) => {
                     </div>
                 </Header>
                 <Content>
-                    {isAlive ? <Outlet /> : ''}
+                    {isAlive ? <RouterBeforeEach /> : ''}
                 </Content>
             </Layout>
-        </Layout>
+            {/* 个人信息 */}
+            <Modal open={showInfo} onCancel={() => setShowInfo(false)} title="管理员信息" width={600} footer={
+                <Button onClick={() => setShowInfo(false)}>我知道了</Button>
+            }>
+                <Form size='large' labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}>
+                    <Form.Item label="当前头像">
+                        <Avatar src={userInfo.avatar} />
+                    </Form.Item>
+                    <Form.Item label="用户名/权限">
+                        <Tag color='processing'>{userInfo.username}</Tag>
+                        <Tag color='error'>{userInfo.level == 1 ? "超级管理员" : "普通管理员"}</Tag>
+                    </Form.Item>
+                    <Form.Item label="用户昵称">
+                        <Tag color='processing'>{userInfo.nickname}</Tag>
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal open={showPwd} onCancel={cancelUpdatePwd} title="修改密码" width={700} footer={
+                <div>
+                    <Button type='primary' onClick={cancelUpdatePwd}>取消修改</Button>
+                    <Button type='primary' onClick={updatePwd}>确认修改</Button>
+                </div>
+            }>
+                <Form form={updatePwdForm} size='large' labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+                    <Form.Item name='nowPwd' label="当前密码" rules={[{ required: true, message: "当前密码不能为空!" }, { min: 5, message: "最少输入5位字符" }]}>
+                        <Input placeholder='请输入当前账号密码' />
+                    </Form.Item>
+                    <Form.Item name='newPwd' label="新密码" rules={[{ required: true, message: "新密码不能为空!" }, { min: 5, message: "最少输入5位字符" }]}>
+                        <Input.Password placeholder='请输入新密码' />
+                    </Form.Item>
+                    <Form.Item name='confirmNewPwd' label="确认新密码" rules={[{ required: true, message: "确认密码不能为空!" }, { min: 5, message: "最少输入5位字符" }]}>
+                        <Input.Password placeholder='请确认新密码' />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </Layout >
 
     )
 }

@@ -1,6 +1,7 @@
 import { message } from 'antd'
 import { evilControl } from '../api'
 import * as echarts from 'echarts';
+import { SAVAEVILDATAINFO } from '../store/constant'
 type EChartsOption = echarts.EChartsOption
 // 全国疫情信息
 interface chinaInfo {
@@ -222,14 +223,26 @@ export const numberInit = (data: chinaInfoInit, setData: Function) => {
     };
     setData({ ...data })
 }
+
+// 缓存的chinaInfo
+export const getSavedAllEvilInfo = (data: chinaInfoInit, setData: Function, evilData: any) => {
+    data.chinaInfo.evilData = evilData
+    data.chinaInfo.updateTime = timestampToTime(evilData.modifyTime)
+    setData({ ...data })
+    numberInit(data, setData)
+    initEchartsxData(data, setData)
+    initEchartsyData(data, setData)
+    chart(document.querySelector('.chart'), data, setData)
+}
 // 获取信息
-export const getAllEvilInfo = async (data: chinaInfoInit, setData: Function) => {
+export const getAllEvilInfo = async (data: chinaInfoInit, setData: Function, dispatch: Function) => {
     const res: any = await evilControl.reqGetEvilInfo()
     if (res.code === 200) {
         data.chinaInfo.evilData = res.newslist[0].desc
         // 将时间转换格式
         data.chinaInfo.updateTime = timestampToTime(data.chinaInfo.evilData['modifyTime'])
         setData({ ...data })
+        dispatch({ type: SAVAEVILDATAINFO, data: res.newslist[0].desc })
         numberInit(data, setData)
         initEchartsxData(data, setData)
         initEchartsyData(data, setData)
