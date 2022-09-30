@@ -1,5 +1,5 @@
-import { Navigate, Route, useLocation } from 'react-router-dom'
-import { MenuOutlined, SolutionOutlined, SafetyOutlined, AreaChartOutlined, InsuranceOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Navigate, } from 'react-router-dom'
+import { MenuOutlined, SolutionOutlined, IssuesCloseOutlined, SafetyOutlined, AreaChartOutlined, InsuranceOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
 import HomeView from '../views/HomeView'
 import MainView from '../views/MainView'
 import EmployeView from '../views/EmployeView'
@@ -20,6 +20,7 @@ import CompanyInfo from '../views/EvilControl/CompanyInfo';
 import ShowNoCovid from '../views/EvilControl/ShowNoCovid';
 import LoginView from '../views/LoginView';
 import NotFound from '../component/404NotFoundView';
+import RecoverEmploye from '../views/RecoverEmploye';
 const routes: any = [
     //重定向
     {
@@ -285,7 +286,17 @@ const routes: any = [
                         activePath: '/homeView/evilControl/companyInfo',
                     }
                 ]
-            }
+            },
+            {
+                path: 'recoverEmploye',
+                absolutePath: '/homeView/recoverEmploye',
+                element: <RecoverEmploye />,
+                title: '恢复员工信息',
+                breadcrumbName: '恢复员工信息',
+                icon: <IssuesCloseOutlined />,
+                show: true,
+                auth: true,
+            },
         ]
     },
     {

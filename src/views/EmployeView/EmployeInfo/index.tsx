@@ -5,6 +5,7 @@ import { employeInfoDataInit, getCityList, changeAddOrUpdateSelect, searchEmploy
 import { Card, Select, Form, Button, Table, Popconfirm, Input, Empty, Pagination, Modal, Radio, DatePicker, message } from 'antd';
 import './index.less'
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 interface DataType {
     key: React.Key;
     name: string;
@@ -13,6 +14,7 @@ interface DataType {
 }
 
 const EmployeInfo: FC = () => {
+
     // 初始化数据
     const [data, setData] = useState(new employeInfoDataInit())
     // 是否有路由参数
@@ -35,10 +37,17 @@ const EmployeInfo: FC = () => {
     }, [])
 
     // 是否删除
-    const confirmDelete = (record: any) => {
-        deleteEmploye(record.employno)
+    // 获取管理员信息
+    const user = useSelector((state: any) => {
+        return state.user.userList.userInfo.username
+    })
+    const confirmDelete = async (record: any) => {
+        
+        const delSuccess = await deleteEmploye(record.employno, record.deptno, user)
         // 获取员工
-        getEmploye(data, setData)
+        if (delSuccess) {
+            getEmploye(data, setData)
+        }
     }
 
     // 表格行
@@ -190,8 +199,6 @@ const EmployeInfo: FC = () => {
         addOrUpdateForm.setFieldsValue({
             deptno: undefined
         })
-        console.log(addOrUpdateForm.getFieldsValue());
-
         data.initData.addOrUpdateForm.dno = value
         setData({ ...data })
         changeAddOrUpdateSelect(data, setData)

@@ -1,11 +1,10 @@
 import { FC, useEffect } from 'react';
-import { useNavigate, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import routes from './router'
 import './App.less'
 const App: FC = () => {
   const elements = useRoutes(routes)
-  const navigate = useNavigate()
   const userInfo = useSelector((state: any) => {
     return state.user.userList.userInfo
   })
@@ -15,7 +14,6 @@ const App: FC = () => {
   // 作者：https://www.cnblogs.com/lulu-beibei/p/15918996.html
   useEffect(() => {
     if (userInfo.nickname !== undefined && userInfo.username !== undefined) {
-
       var drawAndShareImage = function (text: string, text1: string, callback: Function) {
         var canvas = document.createElement('canvas')
         canvas.width = 570

@@ -171,6 +171,7 @@ export const searchEmployeInfo = async (data: employeInfoDataInit, keyword: stri
         data.initData.tableDatas = data.initData.employeInfo.map((employe: employeInfo) => {
             return {
                 key: employe.employno,
+                deptno: employe.deptno,
                 employno: employe.employno,
                 employname: employe.employname,
                 employage: employe.employage,
@@ -203,6 +204,7 @@ export const getEmploye = async (data: employeInfoDataInit, setData: Function) =
             data.initData.tableDatas = data.initData.employeInfo.map((employe: employeInfo) => {
                 return {
                     key: employe.employno,
+                    deptno: employe.deptno,
                     employno: employe.employno,
                     employname: employe.employname,
                     employage: employe.employage,
@@ -319,12 +321,15 @@ export const editEmploye = (key: any, data: employeInfoDataInit, setData: Functi
 }
 
 // 删除员工
-export const deleteEmploye = async (employno: number | string) => {
-    const res: any = await employe.reqDeleteEmploye({ employno })
+export const deleteEmploye = async (employno: number | string, deptno: number | string, user: string) => {
+    const res: any = await employe.reqDeleteEmploye({ employno, deptno, user })
     if (res.code === 200) {
         message.success('删除员工成功！')
+        return true
+
     } else {
         message.error('删除员工失败！')
+        return false
     }
 }
 

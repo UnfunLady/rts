@@ -3,6 +3,7 @@ import nprogress from 'nprogress'
 import 'nprogress/nprogress.css';
 import { message } from 'antd'
 import { store } from "../store/store";
+import { USEROUT } from "../store/constant";
 enum MSGS {
     // 自动递增
     '请求操作成功!' = 200,
@@ -34,6 +35,8 @@ request.interceptors.response.use(res => {
     // 如果身份过期
     if (code === 203) {
         nprogress.done()
+        location.replace('/loginView')
+        store.dispatch({ type: USEROUT, data: {} })
         message.error(MSGS[code] + '       ' + res.data.msg)
         return Promise.reject(res.data)
     } else {
