@@ -22,7 +22,7 @@ export default function ShowDepartment(props: Props) {
 
     const showFinalConfrim = (record: any) => {
         confirm({
-            width: 500,
+            width: 550,
             icon: <DeleteOutlined style={{ color: "red" }} />,
             okText: "确认解散",
             cancelText: "取消解散",
@@ -30,7 +30,8 @@ export default function ShowDepartment(props: Props) {
             title: "再次确认",
             content: (
                 <>
-                    <p>请输入<span style={{ color: "red" }}>确认解散</span>以解散部门</p>
+                    请输入<span style={{ color: "red" }}>确认解散</span>以解散部门 <br />
+                    <span style={{ color: "red", fontSize: "12px", marginTop: "10px" }}>注:该操作无法还原,请谨慎操作</span>
                     <Input ref={confirmDelInput} placeholder='请输入确认解散' required />
                 </>
             ),

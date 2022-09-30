@@ -1,5 +1,5 @@
 import { message } from 'antd'
-import { employe, recoverEmploye } from '../api'
+import { recoverEmploye } from '../api'
 
 interface recoverType {
     tableData: Array<any>,

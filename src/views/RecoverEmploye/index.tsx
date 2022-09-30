@@ -9,7 +9,6 @@ export default function RecoverEmploye() {
     interface dataType {
         key: React.Key
     }
-
     const [data, setData] = useState(new recoverInit())
     useEffect(() => {
         // 获取全部信息

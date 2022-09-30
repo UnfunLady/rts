@@ -1,5 +1,5 @@
 import { Navigate, } from 'react-router-dom'
-import { MenuOutlined, SolutionOutlined, IssuesCloseOutlined, SafetyOutlined, AreaChartOutlined, InsuranceOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
+import { MenuOutlined, SolutionOutlined, IssuesCloseOutlined, UserSwitchOutlined, SafetyOutlined, AreaChartOutlined, InsuranceOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
 import HomeView from '../views/HomeView'
 import MainView from '../views/MainView'
 import EmployeView from '../views/EmployeView'
@@ -21,6 +21,7 @@ import ShowNoCovid from '../views/EvilControl/ShowNoCovid';
 import LoginView from '../views/LoginView';
 import NotFound from '../component/404NotFoundView';
 import RecoverEmploye from '../views/RecoverEmploye';
+import RecoverGroup from '../views/RecoverGroup';
 const routes: any = [
     //重定向
     {
@@ -297,6 +298,16 @@ const routes: any = [
                 show: true,
                 auth: true,
             },
+            {
+                path: 'recoverGroup',
+                absolutePath: '/homeView/recoverEmploye',
+                element: <RecoverGroup />,
+                title: '恢复小组信息',
+                breadcrumbName: '恢复小组信息',
+                icon: <UserSwitchOutlined />,
+                show: true,
+                auth: true,
+            },
         ]
     },
     {
@@ -339,5 +350,7 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/evilControl/chinaInfo': '全国疫情信息',
     '/homeView/evilControl/companyInfo': '公司疫情信息',
     '/homeView/evilControl/showNoCovid': '相关员工信息',
+    '/homeView/recoverEmploye': '恢复员工',
+    '/homeView/recoverGroup': '恢复小组',
 };
 export default routes

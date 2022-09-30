@@ -4,7 +4,7 @@ import { Card, Button, Table, Tag, Popconfirm } from 'antd'
 import { delGroup } from '../../../../../type/department';
 import { ColumnsType } from 'antd/lib/table';
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux'
 interface Props {
     GroupInfo: any,
     change: Function
@@ -12,10 +12,14 @@ interface Props {
 
 export default function DeleteGroupView(props: Props) {
     const navigate = useNavigate()
+    const user = useSelector((state: any) => {
+        return state.user.userList.userInfo.username
+    })
     // 解散小组
     const confirmDel = async (record: any) => {
         const delData = {
-            id: record.id
+            id: record.id,
+            user: user
         }
         const success = await delGroup(delData)
         if (success) {

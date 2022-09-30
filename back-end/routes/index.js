@@ -468,9 +468,6 @@ depall.explain = '${explain}'  WHERE dno = ${dno};
     }
   })
 })
-
-
-
 // 1.上传头像 vue
 router.post('/api/editDept', upload.single('file'), (req, res) => {
   //上传的图片到uploads文件
@@ -561,9 +558,6 @@ router.post('/api/editDeptR', upload.single('file'), (req, res) => {
     }
   })
 })
-
-
-
 // 修改小组信息
 router.post('/api/editGroupInfo', (req, res) => {
   const { id, deptname, location, count } = req.body
@@ -690,61 +684,94 @@ router.post('/api/addGroup', (req, res) => {
 })
 // 解散小组
 router.post('/api/delGroup', (req, res) => {
-  const { id } = req.body;
-  // 查询小组剩下的员工
-  const preSql = `select e.employno from employee e where e.deptno=${id}`
-  connect.query(preSql, (error, results) => {
-    if (error) throw error
-    if (results.length > 0) {
-      // 如果有循环删除掉
-      const success = results.every((item, index) => {
-        const delEmployeSql = `delete from employee e where e.employno=${item.employno} and e.deptno=${id} `
-        const delSuccess = connect.query(delEmployeSql, (err, result) => {
-          if (err) throw err
-          if (result.affectedRows > 0) {
-            // 删除成功返回true
-            return true
-          }
-        })
-        return delSuccess
-      })
-      // 如果全部都删除完了 执行删除小组操作
-      if (success) {
-        const sql = `delete from dept where dept.id=${id}`
-        connect.query(sql, (e, r) => {
-          if (e) throw e
-          if (r.affectedRows > 0) {
-            res.send({
-              code: 200,
-              msg: '解散小组成功!'
-            })
-          } else {
-            res.send({
-              code: 202,
-              msg: '解散小组失败!'
-            })
-          }
-        })
-      }
-    } else {
-      // 如果小组已经没有员工了 直接执行删除小组的操作
-      const sql = `delete from dept where dept.id=${id}`
-      connect.query(sql, (e, r) => {
-        if (e) throw e
-        if (r.affectedRows > 0) {
-          res.send({
-            code: 200,
-            msg: '解散小组成功!'
+  const { id, user } = req.body;
+  // 获取小组信息
+  const preSql1 = `select * from dept where id=${id}`
+  // 获取当前操作的时间
+  const nowDate = moment().format('YYYY-MM-DD HH:mm:ss')
+  connect.query(preSql1, (de, dr) => {
+    if (de) res.send({ code: 202, msg: "解散小组失败" })
+    if (dr && dr.length > 0) {
+      //  插入备份表
+      const preSql2 = `insert into deptredo (id,deptno,deptname,location,count,countCovid,confirmTime,whichDone) values(${dr[0].id},${dr[0].deptno},
+        '${dr[0].deptname}','${dr[0].location}',0,0,'${nowDate}','${user}')`
+      console.log(preSql2);
+      connect.query(preSql2, (bfe, bfr) => {
+        if (bfe) res.send({ code: 202, msg: "解散小组失败" })
+        if (bfr && bfr.affectedRows > 0) {
+          // 查询小组剩下的员工
+          const preSql = `select e.employno from employee e where e.deptno=${id}`
+          connect.query(preSql, (error, results) => {
+            if (error) throw error
+            if (results.length > 0) {
+              // 如果有循环删除掉
+              const success = results.every((item, index) => {
+                const delEmployeSql = `delete from employee e where e.employno=${item.employno} and e.deptno=${id} `
+                const delSuccess = connect.query(delEmployeSql, (err, result) => {
+                  if (err) throw err
+                  if (result.affectedRows > 0) {
+                    // 删除成功返回true
+                    return true
+                  }
+                })
+                return delSuccess
+              })
+              // 如果全部都删除完了 执行删除小组操作
+              if (success) {
+                const sql = `delete from dept where dept.id=${id}`
+                connect.query(sql, (e, r) => {
+                  if (e) throw e
+                  if (r.affectedRows > 0) {
+                    connect.query(preSql1, (de, bfr) => {
+                      if (bfr.affectedRows > 0) {
+                        res.send({
+                          code: 200,
+                          msg: '解散小组成功!'
+                        })
+                      } else {
+                        res.send({
+                          code: 202,
+                          msg: '解散小组失败!'
+                        })
+                      }
+                    })
+
+                  } else {
+                    res.send({
+                      code: 202,
+                      msg: '解散小组失败!'
+                    })
+                  }
+                })
+              }
+            } else {
+              // 如果小组已经没有员工了 直接执行删除小组的操作
+              const sql = `delete from dept where dept.id=${id}`
+              connect.query(sql, (e, r) => {
+                if (e) throw e
+                if (r.affectedRows > 0) {
+                  res.send({
+                    code: 200,
+                    msg: '解散小组成功!'
+                  })
+                } else {
+                  res.send({
+                    code: 202,
+                    msg: '解散小组失败!'
+                  })
+                }
+              })
+            }
           })
         } else {
-          res.send({
-            code: 202,
-            msg: '解散小组失败!'
-          })
+          res.send({ code: 202, msg: "解散小组失败" })
         }
       })
+    } else {
+      res.send({ code: 202, msg: "解散小组失败" })
     }
   })
+
 })
 // 解散部门
 router.post('/api/delDept', (req, res) => {
@@ -1168,7 +1195,6 @@ router.post('/api/rebackEmploye', (req, res) => {
   // 添加员工
   const preSql = `INSERT INTO  vuets.employee (deptno , employno ,  employname ,  employage ,  employsex ,  employidcard ,  employphone ,  entryDate ,  employemail ,  employaddress ,  employsalary ,  isuse )
    VALUES  ( ${deptno},${employno}, '${employname}', '${employage}', '${employsex}', '${employidcard}', '${employphone}', '${entryDate}', '${employemail}', '${employaddress}', '${employsalary}', '${isuse}');`
-  console.log(preSql);
   connect.query(preSql, (err, result) => {
     if (err) {
       res.send({ code: 202, msg: '信息恢复失败!' })
@@ -1187,5 +1213,45 @@ router.post('/api/rebackEmploye', (req, res) => {
     }
   })
 
+})
+
+// 查看删除的小组
+router.get('/api/getRecoverGroup', (req, res) => {
+  const { page, size } = req.query
+  const sql = `select * from deptredo limit ${page - 1},${size}`
+  connect.query(`select count(*) as count from deptredo`, (e, r) => {
+    if (e) res.send({ code: 202, msg: '获取信息失败' })
+    connect.query(sql, (err, results) => {
+      if (err) res.send({ code: 202, msg: '获取信息失败！' })
+      if (results.length > 0) {
+        res.send({ code: 200, results: results, count: r[0].count })
+      } else {
+        res.send({ code: 202, msg: '暂无删除小组' })
+      }
+    })
+  })
+})
+
+// 恢复小组
+router.post('/api/recoverGroup', (req, res) => {
+  const { id, deptno, deptname, location, count, countCovid } = req.body
+  const preSql = `INSERT INTO  vuets.dept ( id ,  deptno ,  deptname ,  location ,  count ,  countCovid ) 
+  VALUES (${id}, ${deptno}, '${deptname}', '${location}', ${count}, ${countCovid});`
+  console.log(preSql);
+  connect.query(preSql, (err, results) => {
+    console.log(results);
+    if (err) res.send({ code: 202, msg: "恢复小组失败" })
+    if (results.affectedRows > 0) {
+      const sql = `delete from deptredo where id=${id} and deptno=${deptno}`
+      connect.query(sql, (de, dr) => {
+        if (de) res.send({ code: 202, msg: "恢复小组失败" })
+        if (dr.affectedRows > 0) {
+          res.send({ code: 200, msg: "恢复小组成功" })
+        } else {
+          res.send({ code: 202, msg: "恢复小组失败" })
+        }
+      })
+    }
+  })
 })
 module.exports = router;
