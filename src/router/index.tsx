@@ -54,7 +54,6 @@ const routes: any = [
             </>
         ),
     },
-
     {
         path: '/homeView/department',
         show: false,

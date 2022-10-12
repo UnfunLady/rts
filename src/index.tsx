@@ -1,5 +1,4 @@
 import ReactDOM from 'react-dom/client';
-import React from 'react'
 import './index.css';
 import './assets/icon/iconfont.js'
 import './assets/icon/iconfont.css'

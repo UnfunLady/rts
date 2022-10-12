@@ -17,6 +17,7 @@ export default function evilControl(preState = new evilDataInit, action: any) {
     const { type, data } = action
     switch (type) {
         case SAVAEVILDATAINFO:
+            // 缓存全国信息
             preState.evilControlData.evilDataInfo.evilData = data
             return { ...preState }
         case DELEVILDATAINFO:

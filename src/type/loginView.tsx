@@ -1,7 +1,6 @@
 import { message } from 'antd'
 import { loginView } from '../api'
 import { USEROUT, SETTOKEN, SETUSERINFO } from "../store/constant";
-import { setToken, setUserInfo } from '../store/actions/user';
 export const loginCheck = async (userInfo: { username: string, password: string }, dispatch: Function) => {
     const res: any = await loginView.reqUserLogin(userInfo)
     if (res && res.code === 200) {

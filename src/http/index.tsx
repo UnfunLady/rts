@@ -17,7 +17,6 @@ const request = axios.create({
     timeout: 5000,
     headers: {
         "Content-Type": "application/json;charset=utf-8",
-
     }
 })
 
@@ -52,6 +51,7 @@ request.interceptors.response.use(res => {
     }
 }, err => {
     console.log(err);
+    nprogress.done()
     message.error(
         '请求失败!'
     )

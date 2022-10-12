@@ -16,6 +16,7 @@ export default function userLoginControl(preState = new userInit(), action: any)
     const { type, data } = action
     switch (type) {
         case SETTOKEN:
+            // 登录
             preState.userList.userToken = data.token
             preState.userList.isLogin = true
             // localStorage.setItem('userInfo', JSON.stringify(preState))
@@ -25,6 +26,7 @@ export default function userLoginControl(preState = new userInit(), action: any)
             // localStorage.setItem('userInfo', JSON.stringify(preState))
             return { ...preState }
         case USEROUT:
+            // 退出登录 重置信息
             preState = new userInit()
             return { ...preState }
         default:
