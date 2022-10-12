@@ -1,4 +1,4 @@
-import  { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { indexViewDataInit, getOneChart, getTwoChart, getCompanyDetail } from '../../type/indexView';
 import './index.less'
 import CountUp from "react-countup";
