@@ -5,7 +5,6 @@ import { composeWithDevTools } from "redux-devtools-extension";
 // 缓存数据
 import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-
 //在localStorge中生成key为root的值
 const persistConfig = {
     key: 'root',

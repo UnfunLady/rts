@@ -180,6 +180,8 @@ export const getDeptByDno = async (data: EmployeSalaryDetailData, setData: Funct
     const res: any = await employe.reqGetDeptByDno(data.employeSalaryDetailForm.DetailForm)
     if (res.code === 200) {
         data.employeSalaryDetailForm.DetailForm.AlldeptInfo = res.groupInfo
+        console.log(data.employeSalaryDetailForm.DetailForm.AlldeptInfo);
+
         data.employeSalaryDetailForm.DetailForm.selectOption = data.employeSalaryDetailForm.DetailForm.AlldeptInfo.map((dept: any) => {
             return <Option key={dept.id}>{dept.deptname}</Option>
         })

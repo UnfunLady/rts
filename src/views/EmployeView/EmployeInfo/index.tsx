@@ -27,7 +27,6 @@ const EmployeInfo: FC = () => {
         // 获取省份
         getAllProvinceAndCityList(data, setData)
         if (location.state !== null) {
-            console.log(location.state);
             data.initData.selectForm.dno = location.state.dno.toString()
             getAllDept(data, setData)
             data.initData.selectForm.deptId = location.state.deptId.toString()
@@ -42,7 +41,7 @@ const EmployeInfo: FC = () => {
         return state.user.userList.userInfo.username
     })
     const confirmDelete = async (record: any) => {
-        
+
         const delSuccess = await deleteEmploye(record.employno, record.deptno, user)
         // 获取员工
         if (delSuccess) {

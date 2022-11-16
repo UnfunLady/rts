@@ -39,7 +39,7 @@ request.interceptors.response.use(res => {
         message.error(MSGS[code] + '       ' + res.data.msg)
         return Promise.reject(res.data)
     } else {
-        if (code !== 200) {
+        if (code !== 200 && res.data.code !== 10000) {
             message.error(MSGS[code] + '       ' + res.data.msg)
             nprogress.done()
             return Promise.reject(res.data)

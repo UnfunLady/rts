@@ -171,6 +171,9 @@ export const chart = (dom: HTMLElement | null, data: chinaInfoInit, setData: Fun
             ]
         };
         option && myChart.setOption(option);
+        window.onresize = function () {
+            myChart.resize();
+        };
         setData({ ...data })
     }
     else {

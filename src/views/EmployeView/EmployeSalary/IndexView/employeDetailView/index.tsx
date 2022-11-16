@@ -272,7 +272,8 @@ export default function EmployeDetailView() {
                 </div>
                 <div>
                     <div style={{ padding: "40px", textAlign: "center", display: data.employeSalaryDetailForm.active === 0 ? "block" : "none" }}>
-                        <Select onChange={selectGroup} size='large' placeholder='请选择要修改的部门员工' style={{ width: 220, borderRadius: "8px !important" }} allowClear>
+                        <span style={{ paddingRight: "20px" }}>请选择小组</span>
+                        <Select onChange={selectGroup} size='large' placeholder='请选择要修改的小组员工' style={{ width: 220, borderRadius: "8px !important" }} allowClear>
                             {data.employeSalaryDetailForm.DetailForm.selectOption}
                         </Select>
                     </div>

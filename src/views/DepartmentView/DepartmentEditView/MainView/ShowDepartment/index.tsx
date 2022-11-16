@@ -56,7 +56,6 @@ export default function ShowDepartment(props: acceptFunction) {
             }
         })
     }
-
     // 表格行
     const columns: ColumnsType<DataType> = [
         {
@@ -143,7 +142,6 @@ export default function ShowDepartment(props: acceptFunction) {
                                 <span className='childDetailText' >部门职责:<span className='sufixText'>{record.explain}</span></span>
                                 <Table bordered dataSource={data.departmentData.childrenTableDatas[index]} columns={childColums} key={record.key} style={{ margin: 0 }} />
                             </div>
-
                         ),
                         // rowExpandable: record => record.name !== 'Not Expandable',
                     }}

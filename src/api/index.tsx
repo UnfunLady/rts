@@ -5,6 +5,7 @@ import mainView from './mainViewApi'
 import loginView from './loginApi'
 import recoverEmploye from "./recoverEmployeApi";
 import recoverGroup from "./recoverGroupApi";
+import mapApi from './mapApi'
 export {
     employe,
     department,
@@ -12,5 +13,6 @@ export {
     mainView,
     loginView,
     recoverEmploye,
-    recoverGroup
+    recoverGroup,
+    mapApi
 }

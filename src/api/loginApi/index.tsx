@@ -5,12 +5,12 @@ interface loginData {
 }
 // 登录请求接口
 const reqUserLogin = (data: loginData) => {
-    return request({ url: '/login', method: 'post', data })
+    return request({ url: '/api/login', method: 'post', data })
 }
 // 修改密码
 const editPassword = (data: object) => {
     return request({
-        url: '/editPassword', data, method: 'post'
+        url: '/api/editPassword', data, method: 'post'
     })
 }
 const loginApi = {

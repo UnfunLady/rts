@@ -18,10 +18,12 @@ import EvilControl from '../views/EvilControl';
 import ChinaInfo from '../views/EvilControl/ChinaInfo';
 import CompanyInfo from '../views/EvilControl/CompanyInfo';
 import ShowNoCovid from '../views/EvilControl/ShowNoCovid';
+import ChinaMap from '../views/EvilControl/ChinaMap'
 import LoginView from '../views/LoginView';
 import NotFound from '../component/404NotFoundView';
 import RecoverEmploye from '../views/RecoverEmploye';
 import RecoverGroup from '../views/RecoverGroup';
+
 const routes: any = [
     //重定向
     {
@@ -261,6 +263,18 @@ const routes: any = [
                         auth: true,
                     },
                     {
+                        path: 'chinaMap',
+                        absolutePath: '/homeView/evilControl/chinaMap',
+                        element: <ChinaMap />,
+                        title: '全国疫情地图',
+                        breadcrumbName: '全国疫情地图',
+                        icon: <AreaChartOutlined />,
+                        activePath: '/homeView/evilControl/chinaInfo',
+                        show: false,
+                        auth: true,
+
+                    },
+                    {
                         path: 'companyInfo',
                         absolutePath: '/homeView/evilControl/companyInfo',
                         element: <CompanyInfo />,
@@ -349,6 +363,7 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/evilControl/chinaInfo': '全国疫情信息',
     '/homeView/evilControl/companyInfo': '公司疫情信息',
     '/homeView/evilControl/showNoCovid': '相关员工信息',
+    '/homeView/evilControl/chinaMap': '全国疫情地图',
     '/homeView/recoverEmploye': '恢复员工',
     '/homeView/recoverGroup': '恢复小组',
 };

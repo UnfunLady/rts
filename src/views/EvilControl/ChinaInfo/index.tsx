@@ -1,7 +1,9 @@
 import { Button, Card } from 'antd'
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Header from '../../../component/Header'
-import { chinaInfoInit, getAllEvilInfo, getSavedAllEvilInfo, timestampToTime } from '../../../type/evilControl'
+import { chinaInfoInit, getAllEvilInfo, getSavedAllEvilInfo } from '../../../type/evilControl'
+import { chinaMapinit, initCharts } from '../../../type/chinamap'
 import { ClockCircleOutlined } from '@ant-design/icons'
 import CountUp from "react-countup";
 import './index.less'
@@ -9,6 +11,7 @@ import PubSub from 'pubsub-js'
 import { useDispatch, useSelector } from 'react-redux'
 export default function ChinaInfo() {
     const [data, setData] = useState(new chinaInfoInit())
+    const [chinaData, setChinaData] = useState(new chinaMapinit())
     // 无任何意义 只用于强制刷新
     // const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
     const evilData = useSelector((state: any) => {
@@ -16,7 +19,7 @@ export default function ChinaInfo() {
     })
     const dispatch = useDispatch()
     useEffect(() => {
-        // 初始化
+
         // 置空图表
         data.chinaInfo.echarts.xData = []
         data.chinaInfo.echarts.yData = {
@@ -42,7 +45,10 @@ export default function ChinaInfo() {
         // forceUpdate()
         PubSub.publish('reloadRouter')
     }
-
+    const navigate = useNavigate()
+    const showbigMap = () => {
+        navigate('/homeView/evilControl/chinaMap')
+    }
     return (
         <div style={{ margin: "30px" }}>
             <div>
@@ -51,11 +57,12 @@ export default function ChinaInfo() {
             <br />
             <div>
                 <Card>
-                    <div className="main">
+                    <div className="main" >
                         <div className="allInfo">
                             <div className="title">
                                 <h3 className="titleInfo">{data.chinaInfo.title}</h3>
                                 <Button danger type='primary' icon={<ClockCircleOutlined />} onClick={getNewInfo}>点击更新最新数据</Button>
+                                <Button style={{ marginLeft: '20px' }} type='primary' icon={<ClockCircleOutlined />} onClick={showbigMap}>查看大地图</Button>
                             </div>
                             {/* 疫情信息 */}
                             <div className="infoCards">
@@ -97,6 +104,7 @@ export default function ChinaInfo() {
                         <div className="chart">
                         </div>
                     </div >
+
                 </Card >
             </div >
         </div >

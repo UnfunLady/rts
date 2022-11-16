@@ -47,7 +47,6 @@ export default function EditDepartment(props: propsType) {
     }
     // 上传前
     const beforeUpload = (file: RcFile) => {
-
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
             message.error('You can only upload JPG/PNG file!');

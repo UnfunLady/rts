@@ -54,7 +54,6 @@ const App: FC = () => {
     }
   }, [userInfo.nickname])
 
-
   return (
     <div className="App" >
       {elements}

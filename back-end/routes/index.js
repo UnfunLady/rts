@@ -1,4 +1,3 @@
-
 var express = require('express');
 var router = express.Router();
 var connect = require('../db/connect')
@@ -393,6 +392,7 @@ router.get('/api/getSaralyDetailInfo', (req, res) => {
           // 获取补贴相关的具体数据
           connect.query(`SELECT es.socialSub,es.houseSub,es.eatSub,es.transSub,es.hotSub,(es.performance*10)as performance FROM employesalary es WHERE deptid=${deptid}`, (haserror, success) => {
             if (r.length > 0) {
+              console.log(r);
               res.send({
                 code: 200,
                 detailInfo: [...r],
@@ -722,20 +722,10 @@ router.post('/api/delGroup', (req, res) => {
                 connect.query(sql, (e, r) => {
                   if (e) throw e
                   if (r.affectedRows > 0) {
-                    connect.query(preSql1, (de, bfr) => {
-                      if (bfr.affectedRows > 0) {
-                        res.send({
-                          code: 200,
-                          msg: '解散小组成功!'
-                        })
-                      } else {
-                        res.send({
-                          code: 202,
-                          msg: '解散小组失败!'
-                        })
-                      }
+                    res.send({
+                      code: 200,
+                      msg: '解散小组成功!'
                     })
-
                   } else {
                     res.send({
                       code: 202,

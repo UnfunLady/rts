@@ -6,19 +6,19 @@ const reqGetEvilInfo = () => {
 
 // 公司疫苗接种信息接口
 const reqGetCompanyEvilInfo = () => {
-    return request({ url: '/getCompanyEvilInfo', method: 'get' })
+    return request({ url: '/api/getCompanyEvilInfo', method: 'get' })
 }
 // 获取相关员工信息
 const reqGetEmployeEvilInfo = (params: Object) => {
-    return request({ url: '/getEmployeEvilInfo', method: 'get', params })
+    return request({ url: '/api/getEmployeEvilInfo', method: 'get', params })
 }
 // 获取全部员工信息
 const reqGetAllEmployeEvilInfo = (params: Object) => {
-    return request({ url: '/getAllEmployeEvilInfo', method: 'get', params })
+    return request({ url: '/api/getAllEmployeEvilInfo', method: 'get', params })
 }
 // 修改员工信息
 const reqUpdateEmployeEvilInfo = (data: Object) => {
-    return request({ url: '/updateEmployeEvilInfo', method: 'post', data })
+    return request({ url: '/api/updateEmployeEvilInfo', method: 'post', data })
 }
 const evilControl = {
     reqGetEvilInfo,

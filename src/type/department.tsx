@@ -62,16 +62,16 @@ export const getAllDeptInfo = async (data: departmentDataInit, setData: Function
                 return {
                     key: child.id,
                     dno: dept.dno,
-                    dname: dept.dname,
+                    dname: child.deptname,
                     groupCount: dept.groupCount,
-                    count: dept.count,
+                    count: child.count,
                     explain: dept.explain,
                     location: child.location,
-
                 }
             })
 
         })
+        console.log(data.departmentData.childrenTableDatas);
         setData({ ...data })
     } else {
         message.error('获取部门信息失败!')
@@ -171,8 +171,6 @@ export const updateGroupInfo = async (data: {
     }
 
 }
-
-
 // 组织新部门
 interface RecordType {
     key: string;
@@ -339,7 +337,8 @@ export const confirmDelDepartment = async (data: object) => {
         message.success('解散小组成功！')
         return true
     } else {
-        return false
         message.error('解散小组失败!')
+        return false
+
     }
 }

@@ -107,8 +107,9 @@ const MainView = (props: Props) => {
     }
     // 跳转路由
     const onClick: MenuProps['onClick'] = e => {
+        console.log(e);
         // 修改默认选中菜单
-        data.mainViewData.defaultPath = e.keyPath
+        // data.mainViewData.defaultPath = e.keyPath
         setData({ ...data })
         if (e.keyPath.length > 1) {
             // 如果是二级以上菜单
@@ -120,6 +121,7 @@ const MainView = (props: Props) => {
         }
     };
     const onOpenChange = (openKeys: string[]) => {
+
         data.mainViewData.OpenKeys = openKeys
         setData({ ...data })
     }
@@ -211,11 +213,11 @@ const MainView = (props: Props) => {
         <Layout>
             <Sider collapsed={data.mainViewData.isClose}>
                 <Menu
-
                     onClick={onClick}
                     // 默认初始选中
                     selectedKeys={data.mainViewData.defaultPath.length > 0 ? data.mainViewData.defaultPath : location.pathname.split('/')}
                     defaultOpenKeys={data.mainViewData.OpenKeys}
+
                     openKeys={data.mainViewData.OpenKeys}
                     mode="inline"
                     theme="dark"
