@@ -107,7 +107,6 @@ const MainView = (props: Props) => {
     }
     // 跳转路由
     const onClick: MenuProps['onClick'] = e => {
-        console.log(e);
         // 修改默认选中菜单
         // data.mainViewData.defaultPath = e.keyPath
         setData({ ...data })

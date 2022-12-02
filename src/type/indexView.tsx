@@ -106,6 +106,9 @@ export const getOneChart = async (dom: HTMLElement | null) => {
             ]
         };
         option && myChart.setOption(option);
+        window.addEventListener("resize",function(){
+            myChart.resize()
+        })
     } else {
         message.error('获取数据失败！')
     }
@@ -177,6 +180,9 @@ export const getTwoChart = async (dom: HTMLElement | null) => {
             ]
         };
         option && myChart.setOption(option);
+        window.addEventListener("resize",function(){
+            myChart.resize()
+        })
     } else {
         message.error('获取信息失败!')
     }

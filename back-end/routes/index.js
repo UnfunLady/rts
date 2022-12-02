@@ -234,7 +234,7 @@ router.post('/api/deleteEmploy', (req, res) => {
   // 获取当前操作的时间
   const nowDate = moment().format('YYYY-MM-DD HH:mm:ss')
   // 删除sql
-  const sql = `delete from employee where employno =${employno} and deptno=${deptno}`
+  const sql = `delete from employee where employno =${employno} and   deptno=${deptno}`
   // 获取员工当前部门号
   const preSql = `select deptno from dept where id=${deptno}`
   connect.query(preSql, (er, rs) => {
@@ -258,6 +258,7 @@ router.post('/api/deleteEmploy', (req, res) => {
           if (rer) res.send({ code: 202, msg: '删除失败' })
           if (rrs.affectedRows > 0) {
             connect.query(sql, (error, results) => {
+              console.log(results)
               if (results && results.affectedRows > 0) {
                 res.send({
                   code: 200,
@@ -283,7 +284,8 @@ router.post('/api/deleteEmploy', (req, res) => {
 router.get('/api/searchEmploy', (req, res) => {
   const { keyword, page, size } = req.query;
   const sql = `
-select e.* ,d.deptname,da.dno from  employee e,dept d,depall da where (e.employno like'%${keyword}%' or e.employname like'%${keyword}%')  AND  e.deptno=d.id GROUP BY e.employno order by e.employno  limit ${(page - 1) * size},${size}`
+select e.* ,d.deptname,da.dno from  employee e,dept d,depall da where (e.employno like'%${keyword}%' or e.employname like'%${keyword}%')  
+AND  e.deptno=d.id GROUP BY e.employno order by e.employno  limit ${(page - 1) * size},${size}`
   connect.query(`select count(DISTINCT e.employno) as count from  employee e,dept d where e.employno like'%${keyword}%' or e.employname like'%${keyword}%' AND  e.deptno=d.id`, (e, r) => {
     if (e) throw e
     else {
@@ -308,7 +310,7 @@ select e.* ,d.deptname,da.dno from  employee e,dept d,depall da where (e.employn
 })
 // 薪资------
 // 获取团队薪资信息
-router.get('/api/getSaralyInfo', (req, res) => {
+router.get('/api/getSalaryInfo', (req, res) => {
   const { dno } = req.query;
   if (dno) {
     const sql = `
@@ -319,12 +321,14 @@ select sa.* from employesalary sa WHERE deptno=${dno}
         connect.query(`select de.* from dept de WHERE deptno=${dno}`, (e, r) => {
           if (r.length > 0) {
             // 将两个数组转化成一个
-            var groupInfo = results.map((item, index) => {
-              return { ...item, ...r[index] };
-            });
+            // const groupInfo = results.map((item, index) => {
+            //   return { ...item, ...r[index] };
+            // });
             res.send({
               code: 200,
-              groupInfo: groupInfo
+              salaryInfo: results,
+              deptInfo: r,
+              // groupInfo: groupInfo
             })
           } else {
             res.send({
@@ -350,7 +354,6 @@ select sa.* from employesalary sa WHERE deptno=${dno}
 // 修改薪资信息
 router.post('/api/updateSalaryInfo', (req, res) => {
   const { editForm, performance } = req.body;
-
   if (editForm.isuse !== null && editForm.isuse !== '' && editForm.deptid !== null) {
     const sql = `
 UPDATE employesalary SET isuse = '${editForm.isuse}' WHERE deptid=${editForm.deptid} `;
@@ -451,6 +454,7 @@ isuse ='${item.isuse}' where  employno =${item.employno};`
     })
   }
 })
+
 // 没有头像
 router.post('/api/editDeptNoAvatar', (req, res) => {
   console.log(req.body)
@@ -560,41 +564,67 @@ router.post('/api/editDeptR', upload.single('file'), (req, res) => {
 })
 // 修改小组信息
 router.post('/api/editGroupInfo', (req, res) => {
-  const { id, deptname, location, count } = req.body
+  const { id, deptname, updateName, location, count } = req.body
   const checkDname = `select *from dept where deptname='${deptname}'`
-  connect.query(checkDname, (erro, checkResult) => {
-    if (erro) throw erro
-    if (checkResult.length > 0) {
-      res.send({
-        code: 202,
-        msg: '已有相同名字部门请重新取名!'
-      })
-    }
-    else {
-      if (id && deptname && location && count) {
-        const sql = `update dept set deptname='${deptname}',location='${location}',count='${count}' where id=${id}`
-        connect.query(sql, (error, results) => {
-          if (error) throw error
-          if (results.affectedRows > 0) {
-            res.send({
-              code: 200,
-              msg: '修改成功'
-            })
-          } else {
-            res.send({
-              code: 202,
-              msg: '修改失败'
-            })
-          }
-        })
-      } else {
+  if (updateName && updateName == true) {
+    connect.query(checkDname, (erro, checkResult) => {
+      if (erro) throw erro
+      if (checkResult.length > 0) {
         res.send({
           code: 202,
-          msg: '缺少重要信息！'
+          msg: '已有相同名字部门请重新取名!'
         })
+      } else {
+        if (id && deptname && location && count) {
+          const sql = `update dept set deptname='${deptname}',location='${location}',count='${count}' where id=${id}`
+          connect.query(sql, (error, results) => {
+            if (error) throw error
+            if (results.affectedRows > 0) {
+              res.send({
+                code: 200,
+                msg: '修改成功'
+              })
+            } else {
+              res.send({
+                code: 202,
+                msg: '修改失败'
+              })
+            }
+          })
+        } else {
+          res.send({
+            code: 202,
+            msg: '缺少重要信息！'
+          })
+        }
       }
+
+    })
+  } else {
+    if (id && deptname && location && count) {
+      const sql = `update dept set deptname='${deptname}',location='${location}',count='${count}' where id=${id}`
+      connect.query(sql, (error, results) => {
+        if (error) throw error
+        if (results.affectedRows > 0) {
+          res.send({
+            code: 200,
+            msg: '修改成功'
+          })
+        } else {
+          res.send({
+            code: 202,
+            msg: '修改失败'
+          })
+        }
+      })
+    } else {
+      res.send({
+        code: 202,
+        msg: '缺少重要信息！'
+      })
     }
-  })
+  }
+
 })
 // 获取全部员工信息
 router.get('/api/getAllEmploye', (req, res) => {
@@ -1224,10 +1254,9 @@ router.get('/api/getRecoverGroup', (req, res) => {
 
 // 恢复小组
 router.post('/api/recoverGroup', (req, res) => {
-  const { id, deptno, deptname, location, count, countCovid } = req.body
+  const { id, deptno, deptname, location} = req.body
   const preSql = `INSERT INTO  vuets.dept ( id ,  deptno ,  deptname ,  location ,  count ,  countCovid ) 
-  VALUES (${id}, ${deptno}, '${deptname}', '${location}', ${count}, ${countCovid});`
-  console.log(preSql);
+  VALUES (${id}, ${deptno}, '${deptname}', '${location}',0, 0);`
   connect.query(preSql, (err, results) => {
     console.log(results);
     if (err) res.send({ code: 202, msg: "恢复小组失败" })

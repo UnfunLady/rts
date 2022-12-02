@@ -3,7 +3,7 @@ import type { ColumnsType } from 'antd/es/table';
 
 import { ArrowLeftOutlined, ArrowRightOutlined, BackwardOutlined } from '@ant-design/icons';
 import { EmployeSalaryDetailData, getDeptByDno, updateEmployeSalaryDetail, getEmployeSalaryDetailInfo } from '../../../../../type/employeSalary'
-import { Card, Steps, Select, Result, Descriptions, Slider, Tag, Button, Table, Switch, message } from 'antd'
+import { Card, Steps, Select, Result, Descriptions, Slider, Tag, Button, Table, Switch, message, Pagination } from 'antd'
 import Header from '../../../../../component/Header'
 import { useLocation } from 'react-router-dom'
 export default function EmployeDetailView() {
@@ -21,7 +21,7 @@ export default function EmployeDetailView() {
             data.employeSalaryDetailForm.DetailForm.dno = deptInfo.dno
             getDeptByDno(data, setData)
         } else {
-            console.log(2);
+
         }
     }, [])
     // 选择了某个小组
@@ -39,17 +39,22 @@ export default function EmployeDetailView() {
             setData({ ...data })
             message.info('已经是第一步了')
         } else if (data.employeSalaryDetailForm.active === 1) {
+            console.log(data.employeSalaryDetailForm.editList);
             // 清空编辑列表
             data.employeSalaryDetailForm.editList = []
             // 清空数据 保持最新
             data.employeSalaryDetailForm.DetailForm.tableDatas = []
             data.employeSalaryDetailForm.active--
             setData({ ...data })
-        }
-        else {
+        } else if (data.employeSalaryDetailForm.active === 2) {
+            // // 清空编辑列表
+            // data.employeSalaryDetailForm.editList = []
+
             data.employeSalaryDetailForm.active--
             setData({ ...data })
-
+        } else {
+            data.employeSalaryDetailForm.active--
+            setData({ ...data })
         }
 
     }
@@ -58,13 +63,16 @@ export default function EmployeDetailView() {
         switch (data.employeSalaryDetailForm.active) {
             case 0:
                 getEmployeSalaryDetailInfo(data, setData)
+                data.employeSalaryDetailForm.active++
                 setData({ ...data })
+
                 break;
             case 1:
                 if (data.employeSalaryDetailForm.editList.length === 0) {
                     message.error('尚未修改员工信息')
                 } else {
                     getEmployeSalaryDetailInfo(data, setData)
+                    data.employeSalaryDetailForm.active++
                     setData({ ...data })
                 }
                 break;
@@ -120,38 +128,51 @@ export default function EmployeDetailView() {
                 record.isuse !== "true" && record.isuse !== true
                     ? record.salary
                     : (record.usesocialSub === "true" || record.usesocialSub === true
-                        ? -data.employeSalaryDetailForm.DetailForm.subDetail[0].socialSub
-                        : data.employeSalaryDetailForm.DetailForm.subDetail[0].socialSub
+                        ? -data.employeSalaryDetailForm.DetailForm.subDetail.socialSub
+                        : data.employeSalaryDetailForm.DetailForm.subDetail.socialSub
                     ) +
                     (record.usehouseSub === "true" || record.usehouseSub === true
-                        ? data.employeSalaryDetailForm.DetailForm.subDetail[0]
+                        ? data.employeSalaryDetailForm.DetailForm.subDetail
                             .houseSub
                         : 0) +
                     (record.useeatSub === "true" || record.useeatSub === true
-                        ? data.employeSalaryDetailForm.DetailForm.subDetail[0].eatSub
+                        ? data.employeSalaryDetailForm.DetailForm.subDetail.eatSub
                         : 0) +
                     (record.usetransSub === "true" || record.usetransSub === true
-                        ? data.employeSalaryDetailForm.DetailForm.subDetail[0]
+                        ? data.employeSalaryDetailForm.DetailForm.subDetail
                             .transSub
                         : 0) +
                     (record.usehotSub === "true" || record.usehotSub === true
-                        ? data.employeSalaryDetailForm.DetailForm.subDetail[0].hotSub
+                        ? data.employeSalaryDetailForm.DetailForm.subDetail.hotSub
                         : 0) +
                     record.salary +
                     record.usePerformance *
-                    data.employeSalaryDetailForm.DetailForm.subDetail[0]
+                    data.employeSalaryDetailForm.DetailForm.subDetail
                         .performance *
                     0.01
             )
         )
         record.allSalary = allSalary;
-
-
         // 将修改过的数据添加到修改表单中收集
         data.employeSalaryDetailForm.editList.push(record)
-        data.employeSalaryDetailForm.editList = Array.from(
-            new Set(data.employeSalaryDetailForm.editList)
-        );
+        // if (data.employeSalaryDetailForm.editList.length > 0) {
+        //     data.employeSalaryDetailForm.editList.map((item, index) => {
+        //         console.log(1);
+        //         if (item.index === record.index) {
+                 
+        //             console.log(data.employeSalaryDetailForm.editList);
+        //         } else {
+        //             console.log(data.employeSalaryDetailForm.editList);
+        //         }
+        //     })
+        // } else {
+        //     console.log(1);
+
+            
+        // }
+
+
+
 
     }
     // 返回第一步
@@ -168,6 +189,7 @@ export default function EmployeDetailView() {
     // 表格Table colums
     const columns: ColumnsType<DataType> = [
         {
+
             title: '部门号',
             dataIndex: 'deptno',
             align: 'center'
@@ -257,7 +279,13 @@ export default function EmployeDetailView() {
             }
         },
     ];
-
+    // 修改页码
+    const changePage = (page: number, pageSize: number) => {
+        data.employeSalaryDetailForm.DetailForm.page = page;
+        data.employeSalaryDetailForm.DetailForm.size = pageSize;
+        setData({ ...data })
+        getEmployeSalaryDetailInfo(data, setData)
+    }
 
     return (
         <div style={{ margin: "20px" }}>
@@ -278,7 +306,8 @@ export default function EmployeDetailView() {
                         </Select>
                     </div>
                     <div style={{ margin: "30px 0 30px 0", display: data.employeSalaryDetailForm.active === 1 ? "block" : "none" }}>
-                        <Table rowKey={record => record.key} pagination={false} dataSource={data.employeSalaryDetailForm.DetailForm.tableDatas} bordered columns={columns} />
+                        <Table rowKey={(record: any) => record.employno} pagination={false} dataSource={data.employeSalaryDetailForm.DetailForm.tableDatas} bordered columns={columns} />
+
                     </div>
                     <div style={{ margin: "30px 0 30px 0", display: data.employeSalaryDetailForm.active === 2 ? "block" : "none" }}>
                         <h3><span style={{ fontWeight: "bold" }}>请确认要修改的信息</span></h3>
@@ -337,6 +366,17 @@ export default function EmployeDetailView() {
                 <div style={{ margin: "0 auto", textAlign: "center", display: data.employeSalaryDetailForm.active === 3 ? "none" : "block" }}>
                     <Button disabled={data.employeSalaryDetailForm.DetailForm.deptid === 0} type='primary' style={{ margin: "4px" }} icon={<ArrowLeftOutlined />} onClick={preStep}>上一步</Button>
                     <Button loading={data.employeSalaryDetailForm.loading} disabled={data.employeSalaryDetailForm.DetailForm.deptid === 0} type='primary' style={{ margin: "4px" }} icon={<ArrowRightOutlined />} onClick={nextStep}>{data.employeSalaryDetailForm.active < 2 ? "下一步" : "提交修改"}</Button>
+                </div>
+                <div style={{ marginTop: "10px", float: "right" }}>
+                    <Pagination
+                        showTotal={total => `共 ${total} 名员工`}
+                        defaultPageSize={8}
+                        pageSizeOptions={[8, 10, 15]}
+                        total={data.employeSalaryDetailForm.DetailForm.count}
+                        showSizeChanger
+                        showQuickJumper
+                        onChange={changePage}
+                    />
                 </div>
             </Card >
         </div >

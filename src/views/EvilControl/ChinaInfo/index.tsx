@@ -19,7 +19,6 @@ export default function ChinaInfo() {
     })
     const dispatch = useDispatch()
     useEffect(() => {
-
         // 置空图表
         data.chinaInfo.echarts.xData = []
         data.chinaInfo.echarts.yData = {

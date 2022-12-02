@@ -17,7 +17,7 @@ const reqAllDept = () => {
     return request({ url: '/api/deptInfo', method: 'get' })
 }
 // 根据部门号获取团队
-const reqGetDeptByDno = (params: deptData) => {
+const reqGetDeptByDno = (params: {dno:number|String}) => {
     return request({ url: '/api/getDeptByDno', method: 'get', params })
 }
 // 根据团队获取员工
@@ -64,7 +64,7 @@ interface SalaryInfo {
 }
 // 获取部门工资明细
 const reqGetSalaryInfo = (params: SalaryInfo) => {
-    return request({ url: '/api/getSaralyInfo', method: 'get', params })
+    return request({ url: '/api/getSalaryInfo', method: 'get', params })
 }
 // 修改部门工资明细的细节
 const reqUpdateSalaryInfo = (data: any) => {
