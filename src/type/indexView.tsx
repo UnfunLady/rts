@@ -32,33 +32,38 @@ export class indexViewDataInit {
         showData: [
             {
                 id: 1,
-                title: '公司部门数量',
+                title: '部门数量',
                 num: null,
-                color: '#ffa352',
+                color: '#5875cf',
+                iconPath: require("../assets/imges/dept.png"),
             },
             {
                 id: 2,
-                title: '公司小组数量',
+                title: '小组数量',
                 num: null,
-                color: '#791618',
+                color: '#285b90',
+                iconPath: require("../assets/imges/group.png"),
             },
             {
                 id: 3,
-                title: '公司员工数量',
+                title: '员工数量',
                 num: null,
                 color: '#e44a3d',
+                iconPath: require("../assets/imges/employe.png"),
             },
             {
                 id: 4,
-                title: '公司平均底薪',
+                title: '平均底薪',
                 num: null,
-                color: '#333333',
+                color: 'orange',
+                iconPath: require("../assets/imges/money.png"),
             },
             {
                 id: 5,
-                title: '公司男性占比',
+                title: '男性占比',
                 num: null,
                 color: '#34aa70',
+                iconPath: require("../assets/imges/man.png"),
             },
         ]
     }
@@ -106,7 +111,7 @@ export const getOneChart = async (dom: HTMLElement | null) => {
             ]
         };
         option && myChart.setOption(option);
-        window.addEventListener("resize",function(){
+        window.addEventListener("resize", function () {
             myChart.resize()
         })
     } else {
@@ -180,7 +185,7 @@ export const getTwoChart = async (dom: HTMLElement | null) => {
             ]
         };
         option && myChart.setOption(option);
-        window.addEventListener("resize",function(){
+        window.addEventListener("resize", function () {
             myChart.resize()
         })
     } else {

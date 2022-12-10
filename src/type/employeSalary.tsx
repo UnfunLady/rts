@@ -219,34 +219,34 @@ export const getEmployeSalaryDetailInfo = async (data: EmployeSalaryDetailData, 
                 deptno: employe.deptno,
                 employno: employe.employno,
                 employname: employe.employname,
-                usesocialSub: employe.usesocialSub,
-                usehouseSub: employe.usehouseSub,
-                useeatSub: employe.useeatSub,
-                usetransSub: employe.usetransSub,
-                usehotSub: employe.usehotSub,
+                usesocialSub: employe.usesocialSub == "true" ? true : false,
+                usehouseSub: employe.usehouseSub == "true" ? true : false,
+                useeatSub: employe.useeatSub == "true" ? true : false,
+                usetransSub: employe.usetransSub == "true" ? true : false,
+                usehotSub: employe.usehotSub == "true" ? true : false,
                 usePerformance: employe.usePerformance,
                 salary: employe.salary,
-                isuse: employe.isuse,
+                isuse: employe.isuse == "true" ? true : false,
                 deptname: employe.deptname,
                 allSalary: (
-                    employe.isuse !== "true"
+                    employe.isuse != "true"
                         ? employe.salary
-                        : (employe.usesocialSub === "true"
+                        : (employe.usesocialSub == "true"
                             ? -data.employeSalaryDetailForm.DetailForm.subDetail.socialSub
                             : data.employeSalaryDetailForm.DetailForm.subDetail.socialSub
                         ) +
-                        (employe.usehouseSub === "true"
+                        (employe.usehouseSub == "true"
                             ? data.employeSalaryDetailForm.DetailForm.subDetail
                                 .houseSub
                             : 0) +
-                        (employe.useeatSub === "true"
+                        (employe.useeatSub == "true"
                             ? data.employeSalaryDetailForm.DetailForm.subDetail.eatSub
                             : 0) +
-                        (employe.usetransSub === "true"
+                        (employe.usetransSub == "true"
                             ? data.employeSalaryDetailForm.DetailForm.subDetail
                                 .transSub
                             : 0) +
-                        (employe.usehotSub === "true"
+                        (employe.usehotSub == "true"
                             ? data.employeSalaryDetailForm.DetailForm.subDetail.hotSub
                             : 0) +
                         employe.salary +
@@ -257,6 +257,8 @@ export const getEmployeSalaryDetailInfo = async (data: EmployeSalaryDetailData, 
                 )
             }
         })
+     
+
         setData({ ...data })
 
     } else {

@@ -35,8 +35,6 @@ const EditGroup = (props: {
 
     const confirmEditGroup = () => {
         editForm.validateFields().then(async (res) => {
-            console.log(data.editData.editInfo.deptname, res.deptname);
-
             let updateInfo;
             if (data.editData.editInfo.deptname != res.deptname) {
                 updateInfo = {
@@ -59,6 +57,7 @@ const EditGroup = (props: {
 
             if (success) {
                 // data.editData.editInfo.deptname=editForm.getFieldValue("deptname");
+                props.change(false)
             }
         }).catch(() => {
             message.error('请按要求输入数据')

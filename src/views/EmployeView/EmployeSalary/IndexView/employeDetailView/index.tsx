@@ -47,9 +47,10 @@ export default function EmployeDetailView() {
             data.employeSalaryDetailForm.active--
             setData({ ...data })
         } else if (data.employeSalaryDetailForm.active === 2) {
-            // // 清空编辑列表
-            // data.employeSalaryDetailForm.editList = []
 
+            getEmployeSalaryDetailInfo(data, setData)
+            // 置空选择列表
+            data.employeSalaryDetailForm.editList = []
             data.employeSalaryDetailForm.active--
             setData({ ...data })
         } else {
@@ -65,13 +66,13 @@ export default function EmployeDetailView() {
                 getEmployeSalaryDetailInfo(data, setData)
                 data.employeSalaryDetailForm.active++
                 setData({ ...data })
-
                 break;
             case 1:
                 if (data.employeSalaryDetailForm.editList.length === 0) {
                     message.error('尚未修改员工信息')
                 } else {
-                    getEmployeSalaryDetailInfo(data, setData)
+
+                    // getEmployeSalaryDetailInfo(data, setData)
                     data.employeSalaryDetailForm.active++
                     setData({ ...data })
                 }
@@ -125,24 +126,24 @@ export default function EmployeDetailView() {
         // 计算薪资
         const allSalary = (
             (
-                record.isuse !== "true" && record.isuse !== true
+                record.isuse != "true" && record.isuse !== true
                     ? record.salary
-                    : (record.usesocialSub === "true" || record.usesocialSub === true
+                    : (record.usesocialSub == "true" || record.usesocialSub == true
                         ? -data.employeSalaryDetailForm.DetailForm.subDetail.socialSub
                         : data.employeSalaryDetailForm.DetailForm.subDetail.socialSub
                     ) +
-                    (record.usehouseSub === "true" || record.usehouseSub === true
+                    (record.usehouseSub == "true" || record.usehouseSub == true
                         ? data.employeSalaryDetailForm.DetailForm.subDetail
                             .houseSub
                         : 0) +
-                    (record.useeatSub === "true" || record.useeatSub === true
+                    (record.useeatSub == "true" || record.useeatSub == true
                         ? data.employeSalaryDetailForm.DetailForm.subDetail.eatSub
                         : 0) +
-                    (record.usetransSub === "true" || record.usetransSub === true
+                    (record.usetransSub == "true" || record.usetransSub == true
                         ? data.employeSalaryDetailForm.DetailForm.subDetail
                             .transSub
                         : 0) +
-                    (record.usehotSub === "true" || record.usehotSub === true
+                    (record.usehotSub == "true" || record.usehotSub == true
                         ? data.employeSalaryDetailForm.DetailForm.subDetail.hotSub
                         : 0) +
                     record.salary +
@@ -154,22 +155,13 @@ export default function EmployeDetailView() {
         )
         record.allSalary = allSalary;
         // 将修改过的数据添加到修改表单中收集
-        data.employeSalaryDetailForm.editList.push(record)
-        // if (data.employeSalaryDetailForm.editList.length > 0) {
-        //     data.employeSalaryDetailForm.editList.map((item, index) => {
-        //         console.log(1);
-        //         if (item.index === record.index) {
-                 
-        //             console.log(data.employeSalaryDetailForm.editList);
-        //         } else {
-        //             console.log(data.employeSalaryDetailForm.editList);
-        //         }
-        //     })
-        // } else {
-        //     console.log(1);
 
-            
-        // }
+        data.employeSalaryDetailForm.editList.push(record)
+        data.employeSalaryDetailForm.editList = Array.from(
+            new Set(data.employeSalaryDetailForm.editList)
+        );
+
+
 
 
 
@@ -222,7 +214,7 @@ export default function EmployeDetailView() {
             dataIndex: 'usehouseSub',
             align: 'center',
             render: (_, record: any, index: number) => {
-                return <Switch onChange={(checked) => changeSub(checked, record, 'house', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.usehouseSub === "true" ? true : false} />
+                return <Switch onChange={(checked) => changeSub(checked, record, 'house', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.usehouseSub} />
             }
         },
         {
@@ -230,7 +222,7 @@ export default function EmployeDetailView() {
             dataIndex: 'useeatSub',
             align: 'center',
             render: (_, record: any, index: number) => {
-                return <Switch onChange={(checked) => changeSub(checked, record, 'eat', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.useeatSub === "true" ? true : false} />
+                return <Switch onChange={(checked) => changeSub(checked, record, 'eat', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.useeatSub} />
             }
         },
         {
@@ -238,7 +230,7 @@ export default function EmployeDetailView() {
             dataIndex: 'usetransSub',
             align: 'center',
             render: (_, record: any, index: number) => {
-                return <Switch onChange={(checked) => changeSub(checked, record, 'trans', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.usetransSub === "true" ? true : false} />
+                return <Switch onChange={(checked) => changeSub(checked, record, 'trans', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.usetransSub} />
             }
         },
         {
@@ -246,7 +238,7 @@ export default function EmployeDetailView() {
             dataIndex: 'usehotSub',
             align: 'center',
             render: (_, record: any, index: number) => {
-                return <Switch onChange={(checked) => changeSub(checked, record, 'hot', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.usehotSub === "true" ? true : false} />
+                return <Switch onChange={(checked) => changeSub(checked, record, 'hot', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.usehotSub} />
             }
         },
         {
@@ -267,7 +259,7 @@ export default function EmployeDetailView() {
             dataIndex: 'isuse',
             align: 'center',
             render: (_, record: any, index: number) => {
-                return <Switch onChange={(checked) => changeSub(checked, record, 'isuse', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.isuse === "true" ? true : false} />
+                return <Switch onChange={(checked) => changeSub(checked, record, 'isuse', index)} disabled={data.employeSalaryDetailForm.loading ? true : false} checkedChildren="补贴" unCheckedChildren="不补贴" defaultChecked={record.isuse} />
             }
         },
         {
@@ -306,25 +298,24 @@ export default function EmployeDetailView() {
                         </Select>
                     </div>
                     <div style={{ margin: "30px 0 30px 0", display: data.employeSalaryDetailForm.active === 1 ? "block" : "none" }}>
-                        <Table rowKey={(record: any) => record.employno} pagination={false} dataSource={data.employeSalaryDetailForm.DetailForm.tableDatas} bordered columns={columns} />
-
+                        <Table rowKey={() => Math.random()} pagination={false} dataSource={data.employeSalaryDetailForm.DetailForm.tableDatas} bordered columns={columns} />
                     </div>
                     <div style={{ margin: "30px 0 30px 0", display: data.employeSalaryDetailForm.active === 2 ? "block" : "none" }}>
                         <h3><span style={{ fontWeight: "bold" }}>请确认要修改的信息</span></h3>
                         {
                             data.employeSalaryDetailForm.editList.map((employe: any) => {
                                 return (
-                                    <Descriptions bordered size='middle' key={employe.key} style={{ marginTop: "20px" }}>
+                                    <Descriptions bordered size='middle' key={Math.random()} style={{ marginTop: "20px" }}>
                                         <Descriptions.Item label="团队名"><Tag color="default">{employe.deptname}</Tag></Descriptions.Item>
                                         <Descriptions.Item label="员工姓名"><Tag color="error">{employe.employname}</Tag></Descriptions.Item>
-                                        <Descriptions.Item label="社保"><Tag color="default">{employe.usesocialSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
-                                        <Descriptions.Item label="房补"><Tag color="default">{employe.usehouseSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
-                                        <Descriptions.Item label="餐补" ><Tag color="default">{employe.useeatSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
-                                        <Descriptions.Item label="交通补" ><Tag color="default">{employe.usetransSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
-                                        <Descriptions.Item label="高温补" ><Tag color="default">{employe.usehotSub === "true" ? "有" : "无"}</Tag></Descriptions.Item>
-                                        <Descriptions.Item label="绩效(1000元)"><Tag color="default">{employe.usePerformance === "true" ? "有" : "无"}</Tag></Descriptions.Item>
-                                        <Descriptions.Item label="底薪" ><Tag color="default">{employe.salary === "true" ? "有" : "无"}</Tag></Descriptions.Item>
-                                        <Descriptions.Item label="是否补贴" ><Tag color="success">{employe.isuse === "true" ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="社保"><Tag color="default">{employe.usesocialSub == true ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="房补"><Tag color="default">{employe.usehouseSub == true ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="餐补" ><Tag color="default">{employe.useeatSub == true ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="交通补" ><Tag color="default">{employe.usetransSub == true ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="高温补" ><Tag color="default">{employe.usehotSub == true ? "有" : "无"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="绩效(1000元)"><Tag color="default">{employe.usePerformance / 100 * 1000 + "元"}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="底薪" ><Tag color="default">{employe.salary}</Tag></Descriptions.Item>
+                                        <Descriptions.Item label="是否补贴" ><Tag color="success">{employe.isuse == true ? "有" : "无"}</Tag></Descriptions.Item>
                                         <Descriptions.Item label="应发工资" ><Tag color="success">{employe.allSalary}</Tag></Descriptions.Item>
                                     </Descriptions>
                                 )
@@ -368,15 +359,20 @@ export default function EmployeDetailView() {
                     <Button loading={data.employeSalaryDetailForm.loading} disabled={data.employeSalaryDetailForm.DetailForm.deptid === 0} type='primary' style={{ margin: "4px" }} icon={<ArrowRightOutlined />} onClick={nextStep}>{data.employeSalaryDetailForm.active < 2 ? "下一步" : "提交修改"}</Button>
                 </div>
                 <div style={{ marginTop: "10px", float: "right" }}>
-                    <Pagination
-                        showTotal={total => `共 ${total} 名员工`}
-                        defaultPageSize={8}
-                        pageSizeOptions={[8, 10, 15]}
-                        total={data.employeSalaryDetailForm.DetailForm.count}
-                        showSizeChanger
-                        showQuickJumper
-                        onChange={changePage}
-                    />
+                    {
+                        data.employeSalaryDetailForm.active == 1 ? <Pagination
+
+                            showTotal={total => `共 ${total} 名员工`}
+                            defaultPageSize={8}
+                            pageSizeOptions={[8, 10, 15]}
+                            total={data.employeSalaryDetailForm.DetailForm.count}
+                            showSizeChanger
+                            showQuickJumper
+                            onChange={changePage}
+                        /> : null
+                    }
+
+
                 </div>
             </Card >
         </div >

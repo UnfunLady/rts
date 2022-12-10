@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react'
 import routes from '../../router'
 // 引入location获取路径
 import { useLocation, useNavigate, Outlet, Link } from 'react-router-dom';
-import { Layout, Col, Row, Dropdown, Breadcrumb, Button, Menu, Avatar, message, Modal, Form, Tag, Input } from 'antd';
+import { Layout, Col, Row, Dropdown, Breadcrumb, Button, Menu, Avatar, message, Modal, Form, Tag, Input, Upload } from 'antd';
 // 引入type数据
 import type { MenuProps } from 'antd'
 import { mainViewDataInit, getMenuNodes, updatePassword } from '../../type/mainView';
-import { MenuFoldOutlined, MenuUnfoldOutlined, DownOutlined } from '@ant-design/icons';
+import { MenuFoldOutlined, MenuUnfoldOutlined, DownOutlined, PlusOutlined, LoadingOutlined, CheckOutlined } from '@ant-design/icons';
 import './index.less'
 import { breadcrumbNameMap } from '../../router';
 import PubSub from 'pubsub-js'
@@ -16,6 +16,7 @@ import RouterBeforeEach from '../../util/RouterBeforeEach';
 import { useDispatch, useSelector } from 'react-redux';
 import { USEROUT } from '../../store/constant';
 import { useForm } from 'antd/es/form/Form';
+import { RcFile, UploadFile, UploadProps } from 'antd/lib/upload';
 const { Header, Sider, Content } = Layout;
 type Props = {
 }
@@ -170,10 +171,19 @@ const MainView = (props: Props) => {
     );
     // 修改密码表单
     const [updatePwdForm] = useForm()
+    const [updateUserForm] = useForm()
     // 个人信息
     const [showInfo, setShowInfo] = useState(false)
     // 修改密码
     const [showPwd, setShowPwd] = useState(false)
+    // 修改个人信息
+    const [showEdit, setShowEdit] = useState(false)
+    // 头像相关
+    const [loading, setLoading] = useState(false);
+    const [imageUrl, setImageUrl] = useState<any>(userInfo.avatar);
+    const [fileList, setFileList] = useState<UploadFile[]>([
+    ]);
+    const [openImg, setOpenImg] = useState(false)
     // 取消修改
     const cancelUpdatePwd = () => {
         setShowPwd(false)
@@ -206,7 +216,100 @@ const MainView = (props: Props) => {
         })
 
     }
+    // 修改个人信息
+    const editInfo = (): void => {
+        setShowInfo(false)
+        setShowEdit(true)
+        setFileList([    // 回显头像
+            {
+                uid: '1',
+                name: 'image.png',
+                status: 'done',
+                url: userInfo.avatar,
+            },])
+        updateUserForm.setFieldValue("newUsername", userInfo.nickname)
+    }
+    const cancelEdit = () => {
+        setShowEdit(false)
+        updateUserForm.resetFields()
+        setFileList([])
+    }
+    const cancelEditInfo = () => {
+        setShowEdit(false)
+        updateUserForm.resetFields()
+        setFileList([])
+    }
+    // 头像相关
+    // 图片转码
+    const getBase64 = (img: RcFile, callback: (url: string) => void) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result as string));
+        reader.readAsDataURL(img);
+    };
+    // 取消预览
+    const cancelOpen = () => {
+        setOpenImg(false)
+    }
+    // 上传前
+    const beforeUpload = (file: RcFile) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('只能上传 JPG/PNG 文件!');
+            return false;
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('图片大小必须小于 2MB!');
+            return false;
+        }
 
+        return false;
+    };
+
+
+    // 图片状态改变时
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+        if (newFileList && newFileList.length > 0) {
+            // 如果有头像 就添加 并且把放大的url也设置
+            getBase64(newFileList[0].originFileObj as RcFile, url => {
+                setImageUrl(url)
+            })
+            setFileList(newFileList);
+        }
+    };
+
+    // upload按钮样式
+    const uploadButton = (
+        <div >
+            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+        </div>
+    );
+    // 预览
+    const handlePreview = () => {
+        setOpenImg(true)
+    };
+
+    // 删除
+    const removeImg = () => {
+        setFileList([])
+    }
+    // 提交修改
+    const confirmUpload = async () => {
+        const lengthFile = updateUserForm.getFieldValue('newAvatar');
+        if (lengthFile && lengthFile.length !== 0) {
+            setLoading(true)
+            updateUserForm.validateFields().then(async (res) => {
+                if (res.newAvatar.fileList.length > 0) {
+                    const formData = new FormData();
+                    fileList.forEach(file => {
+                        formData.append('file', file.originFileObj as File);
+                    });
+                    formData.append('nickname', updateUserForm.getFieldValue('newUsername'))
+                    // 发请求
+                }
+            })
+        }
+    }
 
     return (
         <Layout>
@@ -216,7 +319,6 @@ const MainView = (props: Props) => {
                     // 默认初始选中
                     selectedKeys={data.mainViewData.defaultPath.length > 0 ? data.mainViewData.defaultPath : location.pathname.split('/')}
                     defaultOpenKeys={data.mainViewData.OpenKeys}
-
                     openKeys={data.mainViewData.OpenKeys}
                     mode="inline"
                     theme="dark"
@@ -254,7 +356,10 @@ const MainView = (props: Props) => {
             </Layout>
             {/* 个人信息 */}
             <Modal open={showInfo} onCancel={() => setShowInfo(false)} title="管理员信息" width={600} footer={
-                <Button onClick={() => setShowInfo(false)}>我知道了</Button>
+                <>
+                    <Button type='primary' icon={<CheckOutlined />} onClick={() => setShowInfo(false)}>我知道了</Button>
+                    <Button type='primary' onClick={editInfo}>修改信息</Button>
+                </>
             }>
                 <Form size='large' labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}>
                     <Form.Item label="当前头像">
@@ -269,6 +374,7 @@ const MainView = (props: Props) => {
                     </Form.Item>
                 </Form>
             </Modal>
+            {/* 修改密码 */}
             <Modal open={showPwd} onCancel={cancelUpdatePwd} title="修改密码" width={700} footer={
                 <div>
                     <Button type='primary' onClick={cancelUpdatePwd}>取消修改</Button>
@@ -287,6 +393,42 @@ const MainView = (props: Props) => {
                     </Form.Item>
                 </Form>
             </Modal>
+            {/* 修改个人信息 */}
+            <Modal open={showEdit} onCancel={cancelEdit} title="修改个人信息" width={700} footer={
+                <div>
+                    <Button type='primary' onClick={cancelEditInfo}>取消修改</Button>
+                    <Button type='primary' onClick={confirmUpload}>确认修改</Button>
+                </div>
+            }>
+                <Form form={updateUserForm} size='large' labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+                    <Form.Item name='newAvatar' label="新头像" rules={[{ required: true, message: "头像不能为空!" }]}>
+
+                        <Upload
+                            onRemove={removeImg}
+                            name="file"
+                            listType="picture-card"
+                            className="avatar-uploader"
+                            fileList={fileList}
+                            action="/api/editDeptR"
+                            beforeUpload={beforeUpload}
+                            onChange={handleChange}
+                            onPreview={handlePreview}
+                            maxCount={1}
+
+                        >
+                            {uploadButton}
+                        </Upload>
+
+                    </Form.Item>
+                    <Form.Item name='newUsername' label="新用户名" rules={[{ required: true, message: "当前用户名不能为空!" }, { min: 5, message: "最少输入5位字符" }]}>
+                        <Input />
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal width={800} open={openImg} title="头像预览" footer={null} onCancel={cancelOpen}>
+                <img alt="example" style={{ width: '100%' }} src={imageUrl} />
+            </Modal>
+
         </Layout >
 
     )

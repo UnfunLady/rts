@@ -19,8 +19,9 @@ export default function ShowNoCovid() {
             data.employeData.isAllEmploye = true
             setData({ ...data })
             getAllInfo(data, setData, {
-                baseInfo: { dno: location.state.info.dno },
-                pagination: { page: data.employeData.page, size: data.employeData.size },
+                dno: location.state.info.dno,
+                page: data.employeData.page,
+                size: data.employeData.size
             })
         } else {
             if (info.dno && !data.employeData.isAllEmploye) {
@@ -46,14 +47,22 @@ export default function ShowNoCovid() {
     const getEvilInfo = async () => {
         // 如果查看的是全部数据就获取全部的
         if (data.employeData.isAllEmploye || data.employeData.justCheck) {
+            // node
+            // getAllInfo(data, setData, {
+            //     baseInfo: { dno: location.state.info.dno },
+            //     pagination: { page: data.employeData.page, size: data.employeData.size },
+            // })
+            // springboot
             getAllInfo(data, setData, {
-                baseInfo: { dno: location.state.info.dno },
-                pagination: { page: data.employeData.page, size: data.employeData.size },
+                dno: location.state.info.dno,
+                page: data.employeData.page,
+                size: data.employeData.size
             })
         } else {
             getEvilEmployeInfo(data, setData, {
-                baseInfo: { dno: location.state.info.dno },
-                pagination: { page: data.employeData.page, size: data.employeData.size },
+                dno: location.state.info.dno,
+                page: data.employeData.page,
+                size: data.employeData.size
             });
         }
     };
@@ -63,8 +72,9 @@ export default function ShowNoCovid() {
         data.employeData.isAllEmploye = !data.employeData.isAllEmploye;
         if (data.employeData.isAllEmploye) {
             getAllInfo(data, setData, {
-                baseInfo: { dno: location.state.info.dno },
-                pagination: { page: data.employeData.page, size: data.employeData.size },
+                dno: location.state.info.dno,
+                page: data.employeData.page,
+                size: data.employeData.size
             })
         } else {
             getEvilInfo()
@@ -81,6 +91,12 @@ export default function ShowNoCovid() {
     // 修改信息前置
     const editInfo = (record: any) => {
         data.employeData.updateForm = record;
+        console.log(data.employeData.updateForm);
+        updateForm.setFieldsValue({
+            firstIn: record.firstInoculation,
+            twoIn: record.secondInoculation,
+            threeIn: record.threeInoculation,
+        })
         data.employeData.dialogTableVisible = true;
         setData({ ...data })
     }
@@ -88,10 +104,6 @@ export default function ShowNoCovid() {
     const changeInoculation = (value: boolean | string, type: string) => {
         switch (type) {
             case 'three':
-                // 这样修改会导致表格跟着修改
-                // data.employeData.updateForm['threeInoculation'] = value
-                // data.employeData.updateForm['firstInoculation'] = data.employeData.updateForm['threeInoculation'];
-                // data.employeData.updateForm['secondInoculation'] = data.employeData.updateForm['threeInoculation'];
                 updateForm.setFieldsValue({
                     firstIn: value,
                     twoIn: value,
@@ -130,8 +142,8 @@ export default function ShowNoCovid() {
                 threeInoculation: updateForm.getFieldValue('threeIn') ? updateForm.getFieldValue('threeIn') : data.employeData.updateForm['threeInoculation'],
             }
             , {
-                baseInfo: { dno: location.state.info.dno },
-                pagination: { page: data.employeData.page, size: data.employeData.size },
+                dno: location.state.info.dno,
+                page: data.employeData.page, size: data.employeData.size
             })
     }
     interface DataType {
