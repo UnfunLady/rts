@@ -17,7 +17,7 @@ const reqAllDept = () => {
     return request({ url: '/api/deptInfo', method: 'get' })
 }
 // 根据部门号获取团队
-const reqGetDeptByDno = (params: deptData) => {
+const reqGetDeptByDno = (params: {dno:number|String}) => {
     return request({ url: '/api/getDeptByDno', method: 'get', params })
 }
 // 根据团队获取员工

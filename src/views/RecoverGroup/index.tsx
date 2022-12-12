@@ -32,7 +32,7 @@ export default function RecoverGroup() {
     // 表格行
     const columns: ColumnsType<dataType> = [
         {
-            title: '团队号',
+            title: '部门号',
             dataIndex: 'deptno',
             align: 'center'
         },

@@ -71,7 +71,6 @@ export const getAllDeptInfo = async (data: departmentDataInit, setData: Function
             })
 
         })
-        console.log(data.departmentData.childrenTableDatas);
         setData({ ...data })
     } else {
         message.error('获取部门信息失败!')
@@ -163,7 +162,7 @@ export const updateGroupInfo = async (data: {
 }) => {
     const res: any = await department.reqUpdateGroupInfo(data);
     if (res.code === 200) {
-        message.success('修改小组成功,刷新以获取最新信息')
+        message.success('修改小组信息成功')
         return true
     } else {
         message.error('修改失败！')
@@ -334,10 +333,10 @@ export const delGroup = async (data: object) => {
 export const confirmDelDepartment = async (data: object) => {
     const res: any = await department.delDept(data)
     if (res.code === 200) {
-        message.success('解散小组成功！')
+        message.success('解散部门成功！')
         return true
     } else {
-        message.error('解散小组失败!')
+        message.error('解散部门失败!')
         return false
 
     }

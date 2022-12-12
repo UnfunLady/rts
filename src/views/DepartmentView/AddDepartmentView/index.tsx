@@ -63,16 +63,17 @@ export default function AddDepartmentView() {
     }
     const resetForm = () => {
         addDepartmentForm.resetFields()
+        setFileList([])
     }
     // 确认提交
     const confirmAdd = () => {
         addDepartmentForm.validateFields().then(async res => {
             const formData = new FormData();
             fileList.forEach(file => {
-                formData.append('files[]', JSON.stringify(file as RcFile));
+                formData.append('file', file.originFileObj as File);
             });
             // 把要用的信息也添加进去
-            formData.append('base64', imageUrl)
+            // formData.append('base64', imageUrl)
             // 修改的部门名
             formData.append('dname', res.dname)
             // 职责

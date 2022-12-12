@@ -103,11 +103,12 @@ export const chart = (dom: HTMLElement | null, data: chinaInfoInit, setData: Fun
                 feature: {
                     dataView: { show: true, readOnly: false, title: "数据展示" },
                     // magicType: { show: true, type: ['bar'] },
-                    restore: { show: true },
+                    restore: { show: true, title: "刷新数据" },
                 }
             },
             legend: {
-                data: ['总数', '相较昨日']
+                data: ['总数', '相较昨日'],
+                top:"10px"
             },
             xAxis: [
                 {
@@ -368,7 +369,6 @@ export const getAllInfo = async (data: evilEmployeInfoInit, setData: Function, p
 }
 // 修改数据
 export const updateEvilEmployeInfo = async (data: evilEmployeInfoInit, setData: Function, updateData: Object, resetData: object) => {
-    console.log(updateData);
 
     const res: any = await evilControl.reqUpdateEmployeEvilInfo(updateData);
     if (res.code === 200) {

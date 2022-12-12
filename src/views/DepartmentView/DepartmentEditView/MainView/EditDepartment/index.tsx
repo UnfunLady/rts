@@ -19,7 +19,8 @@ export default function EditDepartment(props: propsType) {
     const [imageUrl, setImageUrl] = useState<any>();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [openImg, setOpenImg] = useState(false)
-    const [editGroupForm] = Form.useForm()
+    const [editGroupForm] = Form.useForm();
+
     useEffect(() => {
         editGroupForm.setFieldsValue({
             dname,
@@ -49,13 +50,14 @@ export default function EditDepartment(props: propsType) {
     const beforeUpload = (file: RcFile) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
-            message.error('You can only upload JPG/PNG file!');
+            message.error('只能上传 JPG/PNG 文件!');
         }
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
-            message.error('Image must smaller than 2MB!');
+            message.error('图片大小必须小于 2MB!');
             return false;
         }
+
 
         return false;
     };
@@ -99,11 +101,14 @@ export default function EditDepartment(props: propsType) {
                 if (res.upload.fileList.length > 0) {
                     const formData = new FormData();
                     fileList.forEach(file => {
-                        formData.append('files[]', JSON.stringify(file as RcFile));
+                        // 
+                        formData.append('file', file.originFileObj as File);
+
                     });
                     // 把要用的信息也添加进去
-                    formData.append('base64', imageUrl)
+                    // formData.append('base64', imageUrl)
                     // 修改的部门名
+
                     formData.append('dname', editGroupForm.getFieldValue('dname'))
                     // 职责
                     formData.append('explain', editGroupForm.getFieldValue('explain'))
@@ -111,6 +116,9 @@ export default function EditDepartment(props: propsType) {
                     formData.append('dno', dno)
                     // 标识
                     formData.append('react', 'true')
+                    if (dname === editGroupForm.getFieldValue('dname')) {
+                        formData.append('notName', "true")
+                    }
                     const success = await updateHasAva(formData)
                     if (success) {
                         // todo  pubsub  设置edit为false  显示show组件
@@ -135,21 +143,41 @@ export default function EditDepartment(props: propsType) {
             })
 
         } else {
-            // 无头像修改
-            const editDeptData = {
-                dno: dno,
-                explain: editGroupForm.getFieldValue('explain'),
-                dname: editGroupForm.getFieldValue('dname')
+
+            if (dname === editGroupForm.getFieldValue('dname')) {
+                console.log(1);
+                // 如果名字没有修改就只修改职责
+                const editDeptData = {
+                    dno: dno,
+                    explain: editGroupForm.getFieldValue('explain'),
+                }
+                const success = await updateNoAva({ editDeptData, notName: true })
+                if (success) {
+                    // pubsub  通知更新
+                    props.change(false)
+                    PubSub.publish('getAllDept', true)
+                }
+                else {
+                    message.error('修改失败')
+                }
+            } else {
+                // 无头像修改
+                const editDeptData = {
+                    dno: dno,
+                    explain: editGroupForm.getFieldValue('explain'),
+                    dname: editGroupForm.getFieldValue('dname')
+                }
+                const success = await updateNoAva({ editDeptData })
+                if (success) {
+                    // pubsub  通知更新
+                    props.change(false)
+                    PubSub.publish('getAllDept', true)
+                }
+                else {
+                    message.error('修改失败')
+                }
             }
-            const success = await updateNoAva({ editDeptData })
-            if (success) {
-                // pubsub  通知更新
-                props.change(false)
-                PubSub.publish('getAllDept', true)
-            }
-            else {
-                message.error('修改失败')
-            }
+
         }
 
 

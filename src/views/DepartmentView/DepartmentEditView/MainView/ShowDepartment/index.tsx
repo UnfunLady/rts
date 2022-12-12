@@ -48,7 +48,6 @@ export default function ShowDepartment(props: acceptFunction) {
     const navigate = useNavigate()
     // 查看团队下某个部门信息
     const moveGroupDetail = (record: any) => {
-        console.log(record);
         navigate('/homeView/employeView/employeInfo', {
             state: {
                 dno: record.dno,

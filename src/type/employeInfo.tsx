@@ -144,7 +144,7 @@ export const getAllDept = async (data: employeInfoDataInit, setData: Function) =
 }
 // 选择部门后获取小组
 export const getGroup = async (data: employeInfoDataInit, setData: Function) => {
-    const res: any = await employe.reqGetDeptByDno(data.initData.selectForm)
+    const res: any = await employe.reqGetDeptByDno({dno:data.initData.selectForm.dno})
     if (res.code === 200) {
         data.initData.groupInfo = res.groupInfo;
         data.initData.groupSelect = data.initData.groupInfo.map((group: deptOrGroupInfo) => {
@@ -264,7 +264,7 @@ export const employeSelect = (data: employeInfoDataInit, setData: Function) => {
 }
 // 选择了部门后获取新的小组
 export const changeAddOrUpdateSelect = async (data: employeInfoDataInit, setData: Function) => {
-    const res: any = await employe.reqGetDeptByDno(data.initData.addOrUpdateForm)
+    const res: any = await employe.reqGetDeptByDno({dno:data.initData.addOrUpdateForm.dno})
     if (res.code === 200) {
         data.initData.addOrUpdateForm.groupInfo = res.groupInfo;
         data.initData.addOrUpdateForm.groupSelect = data.initData.addOrUpdateForm.groupInfo.map((group: deptOrGroupInfo) => {
@@ -281,8 +281,13 @@ export const changeAddOrUpdateSelect = async (data: employeInfoDataInit, setData
 export const cofimAddOrUpdate = async (data: employeInfoDataInit) => {
     if (data.initData.addOrUpdateForm.isUpdate) {
         const updateObj={
+<<<<<<< HEAD
             employno:data.initData.addOrUpdateForm.employno,
             deptno:data.initData.addOrUpdateForm.deptno,
+=======
+            "employno":data.initData.addOrUpdateForm.employno,
+            "deptno":data.initData.addOrUpdateForm.deptno,
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
             "employname": data.initData.addOrUpdateForm.employname,
             "employage": data.initData.addOrUpdateForm.employage,
             "employsex":data.initData.addOrUpdateForm.employsex,
@@ -292,12 +297,20 @@ export const cofimAddOrUpdate = async (data: employeInfoDataInit) => {
             "employemail": data.initData.addOrUpdateForm.employemail,
             "employaddress":  data.initData.addOrUpdateForm.employaddress,
             "employsalary": data.initData.addOrUpdateForm.employsalary,
+<<<<<<< HEAD
             "isUpdate": false,
             "changeGroup": false,
             "old":data.initData.selectForm.deptId,
 
         }
         const res: any = await employe.reqAddOrUpdateEmploye({ default: data.initData.addOrUpdateForm, old: data.initData.selectForm.deptId, changeGroup: false })
+=======
+            "isUpdate": true,
+            "changeGroup": false,
+            "oldDeptno":data.initData.selectForm.deptId,
+        }
+        const res: any = await employe.reqAddOrUpdateEmploye(updateObj)
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
         if (res.code === 200) {
             message.success('修改员工成功！')
         } else {
@@ -305,7 +318,12 @@ export const cofimAddOrUpdate = async (data: employeInfoDataInit) => {
         }
     } else {
         const addObj={
+<<<<<<< HEAD
             deptno:data.initData.addOrUpdateForm.deptno,
+=======
+            "employno":data.initData.addOrUpdateForm.employno,
+            "deptno":data.initData.addOrUpdateForm.deptno,
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
             "employname": data.initData.addOrUpdateForm.employname,
             "employage": data.initData.addOrUpdateForm.employage,
             "employsex":data.initData.addOrUpdateForm.employsex,
@@ -316,11 +334,20 @@ export const cofimAddOrUpdate = async (data: employeInfoDataInit) => {
             "employaddress":  data.initData.addOrUpdateForm.employaddress,
             "employsalary": data.initData.addOrUpdateForm.employsalary,
             "isUpdate": false,
+<<<<<<< HEAD
             "changeGroup": false
         }
         console.log(addObj);
         
         const res: any = await employe.reqAddOrUpdateEmploye({ default: data.initData.addOrUpdateForm, old: data.initData.selectForm.deptId, changeGroup: false })
+=======
+            "changeGroup": false,
+            "oldDeptno":data.initData.selectForm.deptId,
+        }
+        console.log(addObj);
+        
+        const res: any = await employe.reqAddOrUpdateEmploye(addObj)
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
         if (res.code === 200) {
             message.success('添加员工成功！')
         } else {

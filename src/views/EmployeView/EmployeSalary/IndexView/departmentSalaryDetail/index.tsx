@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Table, Card, Tag, Slider, Switch } from 'antd';
+import { Table, Card, Tag, Slider, Switch, Pagination } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { initDepartmentData, getEmployeSalaryInfo, updateEmployeSalaryInfo } from '../../../../../type/employeSalary';
 import Header from '../../../../../component/Header';
@@ -134,17 +134,15 @@ const DepartmentSalaryDetail: FC = () => {
     ];
     // 修改补贴
     const changeIsuse = (newValue: boolean, record: any) => {
+
         data.initDepartmentData.employeSalaryForm.editForm.deptid = record.deptid;
         data.initDepartmentData.employeSalaryForm.editForm.isuse = newValue;
+        data.initDepartmentData.employeSalaryForm.performance.performance = record.performance;
+        data.initDepartmentData.employeSalaryForm.isLoading = true;
         setData({ ...data })
         updateEmployeSalaryInfo(data, setData)
-        getEmployeSalaryInfo(data, setData)
 
     }
-
-
-
-
     // 修改绩效
     const changePerformance = (newValue: string | number, record: any) => {
         if (!data.initDepartmentData.employeSalaryForm.isLoading) {
@@ -157,13 +155,12 @@ const DepartmentSalaryDetail: FC = () => {
         }
     }
 
-
-
     return (
         <div className="departmentSalaryDetail" style={{ margin: "20px" }}>
             <Header title='温馨提示' explain='这是针对整个小团队的明细,如想修改具体某位员工的数据请在详细信息处修改' />
             <Card style={{ marginTop: "40px" }}>
                 <Table pagination={false} columns={columns} rowKey={record => record.key} bordered dataSource={data.initDepartmentData.tableDatas} />
+           
             </Card>
         </div>
     );

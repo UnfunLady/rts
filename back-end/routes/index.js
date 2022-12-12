@@ -97,7 +97,11 @@ router.get('/api/companyDetail', (req, res) => {
                   connect.query(fiveSql, (e5, r5) => {
                     if (r5.length > 0) {
                       const BoyGrilsPercentage = parseFloat(r5[0].BoyGrilsPercentage / r3[0].companyEmployeCount).toFixed(2) * 100 + '%'
-                      res.send({ code: 200, detailData: { companyDeptCount: r1[0].companyDeptCount, companyGroupCount: r2[0].companyGroupCount, companyEmployeCount: r3[0].companyEmployeCount, companyAvgSalary: r4[0].companyAvgSalary, BoyGrilsPercentage } })
+                      res.send({ code: 200, detailData: { 
+                        companyDeptCount: r1[0].companyDeptCount, 
+                        companyGroupCount: r2[0].companyGroupCount,
+                         companyEmployeCount: r3[0].companyEmployeCount, 
+                         companyAvgSalary: r4[0].companyAvgSalary, BoyGrilsPercentage } })
                     }
                   })
                 }
@@ -370,7 +374,6 @@ UPDATE employesalary SET isuse = '${editForm.isuse}' WHERE deptid=${editForm.dep
 UPDATE employesalary SET performance = '${performance.performance}' WHERE deptid=${performance.deptid} `;
     connect.query(sql, (e, r) => {
       const nextSql = `UPDATE  vuets.employesalarydetail  SET   usePerformance  = ${performance.performance} WHERE  deptno  = ${performance.deptid};`
-
       connect.query(nextSql, (errorr, changeSuccess) => {
         if (changeSuccess.affectedRows > 0) {
           res.send({

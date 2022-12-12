@@ -27,13 +27,20 @@ type departmentDataType = {
         groupInfo: [],
         isLoading: boolean,
         editForm: {
+<<<<<<< HEAD
             isuse: string | boolean|null,
             deptid: string | number|null,
+=======
+            isuse: string | boolean | null,
+            deptid: string | number | null,
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
         },
         performance: {
             deptid: string | number,
             performance: string | number,
         },
+        page: number,
+        size: number,
     }
     tableDatas: any
 }
@@ -51,6 +58,8 @@ export class initDepartmentData {
                 deptid: 0,
                 performance: 100,
             },
+            page: 1,
+            size: 8,
         },
         tableDatas: []
     }
@@ -60,7 +69,11 @@ export const getEmployeSalaryInfo = async (data: initDepartmentData, setData: Fu
     const res: any = await employe.reqGetSalaryInfo({ dno: data.initDepartmentData.employeSalaryForm.dno })
     if (res.code === 200) {
         // 合并薪资信息
+<<<<<<< HEAD
         const groupInfo = res.salaryInfo.map((item:any, index:any) => {
+=======
+        const groupInfo = res.salaryInfo.map((item: any, index: any) => {
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
             return { ...item, ...res.deptInfo[index] };
         });
 
@@ -88,6 +101,7 @@ export const getEmployeSalaryInfo = async (data: initDepartmentData, setData: Fu
 }
 // 修改部门绩效
 export const updateEmployeSalaryInfo = async (data: initDepartmentData, setData: Function) => {
+<<<<<<< HEAD
     const obj={
         editIsuse:data.initDepartmentData.employeSalaryForm.editForm.isuse,
         editIsuseId:data.initDepartmentData.employeSalaryForm.editForm.deptid,
@@ -96,6 +110,16 @@ export const updateEmployeSalaryInfo = async (data: initDepartmentData, setData:
     }
     
     const res: any = await employe.reqUpdateSalaryInfo(data.initDepartmentData.employeSalaryForm);
+=======
+
+    const obj = {
+        editIsuse: data.initDepartmentData.employeSalaryForm.editForm.isuse,
+        editIsuseId: data.initDepartmentData.employeSalaryForm.editForm.deptid,
+        performanceId: data.initDepartmentData.employeSalaryForm.performance.deptid,
+        performance: data.initDepartmentData.employeSalaryForm.performance.performance
+    }
+    const res: any = await employe.reqUpdateSalaryInfo(obj);
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
     if (res && res.code === 200) {
         // 重置修改表单
         data.initDepartmentData.employeSalaryForm.performance = {
@@ -109,6 +133,7 @@ export const updateEmployeSalaryInfo = async (data: initDepartmentData, setData:
         // 解锁
         data.initDepartmentData.employeSalaryForm.isLoading = false;
         setData({ ...data })
+        getEmployeSalaryInfo(data, setData)
     } else {
         message.error('修改绩效失败！')
     }
@@ -130,16 +155,16 @@ interface employeSalaryDetail {
         // 员工细节数据
         employeDetail: [],
         // 补贴相关的数据
-        subDetail: [
-            {
-                socialSub: number,
-                houseSub: number,
-                eatSub: number,
-                transSub: number,
-                hotSub: number,
-                performance: number
-            }
-        ],
+        subDetail:
+        {
+            socialSub: number,
+            houseSub: number,
+            eatSub: number,
+            transSub: number,
+            hotSub: number,
+            performance: number
+        }
+        ,
         selectOption: JSX.Element[],
         tableDatas: Array<any>,
         // 应发工资
@@ -163,14 +188,14 @@ export class EmployeSalaryDetailData {
             dno: '',
             AlldeptInfo: [],
             employeDetail: [],
-            subDetail: [{
+            subDetail: {
                 socialSub: 0,
                 houseSub: 0,
                 eatSub: 0,
                 transSub: 0,
                 hotSub: 0,
                 performance: 0
-            }],
+            },
             selectOption: [],
             tableDatas: [],
             allSalary: 0,
@@ -189,11 +214,9 @@ export class EmployeSalaryDetailData {
 
 // 获取部门小组
 export const getDeptByDno = async (data: EmployeSalaryDetailData, setData: Function) => {
-    const res: any = await employe.reqGetDeptByDno(data.employeSalaryDetailForm.DetailForm)
+    const res: any = await employe.reqGetDeptByDno({ dno: data.employeSalaryDetailForm.DetailForm.dno })
     if (res.code === 200) {
         data.employeSalaryDetailForm.DetailForm.AlldeptInfo = res.groupInfo
-        console.log(data.employeSalaryDetailForm.DetailForm.AlldeptInfo);
-
         data.employeSalaryDetailForm.DetailForm.selectOption = data.employeSalaryDetailForm.DetailForm.AlldeptInfo.map((dept: any) => {
             return <Option key={dept.id}>{dept.deptname}</Option>
         })
@@ -204,7 +227,7 @@ export const getDeptByDno = async (data: EmployeSalaryDetailData, setData: Funct
 }
 // 获取部门员工细节
 export const getEmployeSalaryDetailInfo = async (data: EmployeSalaryDetailData, setData: Function) => {
-    const res: any = await employe.reqGetSalaryDetailInfo(data.employeSalaryDetailForm.DetailForm)
+    const res: any = await employe.reqGetSalaryDetailInfo({ deptid: data.employeSalaryDetailForm.DetailForm.deptid, page: data.employeSalaryDetailForm.DetailForm.page, size: data.employeSalaryDetailForm.DetailForm.size })
     if (res.code === 200) {
         data.employeSalaryDetailForm.DetailForm.employeDetail = data.employeSalaryDetailForm.DetailForm.employeDetail = res.detailInfo;
         data.employeSalaryDetailForm.DetailForm.count = res.count;
@@ -216,45 +239,46 @@ export const getEmployeSalaryDetailInfo = async (data: EmployeSalaryDetailData, 
                 deptno: employe.deptno,
                 employno: employe.employno,
                 employname: employe.employname,
-                usesocialSub: employe.usesocialSub,
-                usehouseSub: employe.usehouseSub,
-                useeatSub: employe.useeatSub,
-                usetransSub: employe.usetransSub,
-                usehotSub: employe.usehotSub,
+                usesocialSub: employe.usesocialSub == "true" ? true : false,
+                usehouseSub: employe.usehouseSub == "true" ? true : false,
+                useeatSub: employe.useeatSub == "true" ? true : false,
+                usetransSub: employe.usetransSub == "true" ? true : false,
+                usehotSub: employe.usehotSub == "true" ? true : false,
                 usePerformance: employe.usePerformance,
                 salary: employe.salary,
-                isuse: employe.isuse,
+                isuse: employe.isuse == "true" ? true : false,
                 deptname: employe.deptname,
                 allSalary: (
-                    employe.isuse !== "true"
+                    employe.isuse != "true"
                         ? employe.salary
-                        : (employe.usesocialSub === "true"
-                            ? -data.employeSalaryDetailForm.DetailForm.subDetail[0].socialSub
-                            : data.employeSalaryDetailForm.DetailForm.subDetail[0].socialSub
+                        : (employe.usesocialSub == "true"
+                            ? -data.employeSalaryDetailForm.DetailForm.subDetail.socialSub
+                            : data.employeSalaryDetailForm.DetailForm.subDetail.socialSub
                         ) +
-                        (employe.usehouseSub === "true"
-                            ? data.employeSalaryDetailForm.DetailForm.subDetail[0]
+                        (employe.usehouseSub == "true"
+                            ? data.employeSalaryDetailForm.DetailForm.subDetail
                                 .houseSub
                             : 0) +
-                        (employe.useeatSub === "true"
-                            ? data.employeSalaryDetailForm.DetailForm.subDetail[0].eatSub
+                        (employe.useeatSub == "true"
+                            ? data.employeSalaryDetailForm.DetailForm.subDetail.eatSub
                             : 0) +
-                        (employe.usetransSub === "true"
-                            ? data.employeSalaryDetailForm.DetailForm.subDetail[0]
+                        (employe.usetransSub == "true"
+                            ? data.employeSalaryDetailForm.DetailForm.subDetail
                                 .transSub
                             : 0) +
-                        (employe.usehotSub === "true"
-                            ? data.employeSalaryDetailForm.DetailForm.subDetail[0].hotSub
+                        (employe.usehotSub == "true"
+                            ? data.employeSalaryDetailForm.DetailForm.subDetail.hotSub
                             : 0) +
                         employe.salary +
                         employe.usePerformance *
-                        data.employeSalaryDetailForm.DetailForm.subDetail[0]
+                        data.employeSalaryDetailForm.DetailForm.subDetail
                             .performance *
                         0.01
                 )
             }
         })
-        data.employeSalaryDetailForm.active++
+     
+
         setData({ ...data })
 
     } else {

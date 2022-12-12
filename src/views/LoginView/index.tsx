@@ -29,7 +29,6 @@ export default function LoginView() {
     }
     return (
         <div className='login'>
-
             <Form
                 form={loginForm}
                 size='large'

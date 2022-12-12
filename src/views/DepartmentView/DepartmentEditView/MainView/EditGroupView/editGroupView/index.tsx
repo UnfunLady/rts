@@ -35,8 +35,11 @@ const EditGroup = (props: {
 
     const confirmEditGroup = () => {
         editForm.validateFields().then(async (res) => {
+<<<<<<< HEAD
             console.log(data.editData.editInfo.deptname, res.deptname);
 
+=======
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
             let updateInfo;
             if (data.editData.editInfo.deptname != res.deptname) {
                 updateInfo = {
@@ -59,6 +62,10 @@ const EditGroup = (props: {
 
             if (success) {
                 // data.editData.editInfo.deptname=editForm.getFieldValue("deptname");
+<<<<<<< HEAD
+=======
+                props.change(false)
+>>>>>>> 71885dc818ea89f99d641651572a211212017952
             }
         }).catch(() => {
             message.error('请按要求输入数据')

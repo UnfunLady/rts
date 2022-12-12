@@ -73,9 +73,9 @@ export default function DeleteGroupView(props: Props) {
                             cancelText="取消操作"
                             onConfirm={() => confirmDel(record)}
                         >
-                            <Button style={{ marginRight: "20px", borderRadius: "3px", height: "30px", fontSize: "12px" }} icon={<DeleteOutlined />} type="primary" danger >解散小组</Button>
+                            <Button style={{ marginRight: "20px", borderRadius: "3px", height: "30px", fontSize: "12px" }} icon={<DeleteOutlined />} type="primary" danger={record.count>0} >解散小组</Button>
                         </Popconfirm>
-                        <Button style={{ borderRadius: "3px", height: "30px", fontSize: "12px" }} icon={<DeliveredProcedureOutlined />} type='primary' onClick={() => { toMoveEmploye(record) }}>迁移成员</Button>
+                        <Button disabled={record.count > 0 ? false : true} style={{ borderRadius: "3px", height: "30px", fontSize: "12px" }} icon={<DeliveredProcedureOutlined />} type='primary' onClick={() => { toMoveEmploye(record) }}>迁移成员</Button>
                     </>
                 )
             }

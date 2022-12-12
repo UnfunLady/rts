@@ -19,7 +19,8 @@ const EmployeInfo: FC = () => {
     const [data, setData] = useState(new employeInfoDataInit())
     // 是否有路由参数
     const location: any = useLocation()
-
+    // form的标签
+    const selectForm: any = useRef()
     useEffect(() => {
         // 获取全部部门的方法
         getAllDept(data, setData)
@@ -27,11 +28,17 @@ const EmployeInfo: FC = () => {
         // 获取省份
         getAllProvinceAndCityList(data, setData)
         if (location.state !== null) {
-            data.initData.selectForm.dno = location.state.dno.toString()
-            getAllDept(data, setData)
-            data.initData.selectForm.deptId = location.state.deptId.toString()
+            data.initData.selectForm.dno = location.state.dno;
+            // 获取小组
+            getGroup(data, setData)
+            data.initData.selectForm.deptId = location.state.deptId;
             // handleDeptChange(data.initData.selectForm.dno)
             getEmploye(data, setData)
+            // 只有string才能回显
+            selectForm.current?.setFieldsValue({
+                depallSelect: location.state.dno.toString(),
+                groupSelect: location.state.deptId.toString()
+            })
         }
     }, [])
 
@@ -132,8 +139,7 @@ const EmployeInfo: FC = () => {
     };
     // 日期格式
     const dateFormat = 'YYYY-MM-DD';
-    // form的标签
-    const selectForm: any = useRef()
+
     // 修改事件
     const handleDeptChange = (value: string | number) => {
         // 清空小组的值 需要给表单打ref和form.item的name
@@ -182,11 +188,9 @@ const EmployeInfo: FC = () => {
             if (err) {
                 message.error('请按要求填写表单数据！')
                 return false
-
             }
 
         })
-
     }
     // 修改了省份 赋值city
     const changeCity = (value: any) => {
@@ -227,8 +231,9 @@ const EmployeInfo: FC = () => {
         <div className="EmployeInfo" style={{ margin: "30px", }}>
             <Card style={{ boxShadow: "0px 0px 12px rgba(0, 0, 0, 0.05)" }} >
                 <Form ref={selectForm} name='basic' layout="inline">
-                    <Form.Item label="部门名">
-                        <Select size="large" placeholder="请选择部门" onChange={handleDeptChange} defaultValue={data.initData.selectForm.dno === '' ? undefined : data.initData.selectForm.dno} style={{ width: 230 }}>
+                    <Form.Item label="部门名" name="depallSelect">
+                        <Select size="large" placeholder="请选择部门" onChange={handleDeptChange}
+                            defaultValue={data.initData.selectForm.dno === '' ? undefined : data.initData.selectForm.dno} style={{ width: 230 }}>
                             {data.initData.deptSelect}
                         </Select>
                     </Form.Item>
@@ -260,10 +265,10 @@ const EmployeInfo: FC = () => {
                 total={data.initData.employeCount as number | undefined}
                 showSizeChanger
                 showQuickJumper
-                showTotal={total => `Total ${total} items`}
+                showTotal={total => `总共 ${total} 名员工`}
                 defaultPageSize={8}
                 pageSizeOptions={[8, 10, 15]}
-                disabled={data.initData.selectForm.dno === "" || data.initData.selectForm.deptId === ""}
+                disabled={data.initData.addOrUpdateForm.keyword === "" && (data.initData.selectForm.dno === "" || data.initData.selectForm.deptId === "")}
                 onChange={pageChange}
             />
             <Empty

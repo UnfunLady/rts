@@ -13,9 +13,18 @@ const editPassword = (data: object) => {
         url: '/api/editPassword', data, method: 'post'
     })
 }
+// 修改用户信息
+const editUserInfo = (data: object) => {
+    return request({ url: "/api/editUserInfo", data, method: "post" })
+}
+const editUserInfoNoAvatar=(data:object)=>{
+    return request({ url: "/api/editUserInfoNoAvatar", data, method: "post" })
+}
 const loginApi = {
     reqUserLogin,
-    editPassword
+    editPassword,
+    editUserInfo,
+    editUserInfoNoAvatar
 }
 
 export default loginApi
