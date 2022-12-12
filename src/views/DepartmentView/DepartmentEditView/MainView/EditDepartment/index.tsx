@@ -63,6 +63,8 @@ export default function EditDepartment(props: propsType) {
 
     // 图片状态改变时
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+        console.log(newFileList);
+        
         if (newFileList && newFileList.length > 0) {
             // 如果有头像 就添加 并且把放大的url也设置
             getBase64(newFileList[0].originFileObj as RcFile, url => {

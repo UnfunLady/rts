@@ -16,10 +16,48 @@
     padding: 0;
     font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif !important;
   }
+
+  /* #root {
+    width: 100px;
+    height: 500px;
+    background-color: red;
+    position: relative;
+    z-index: 9999;
+  }
+
+  #root1 {
+    width: 50px;
+    height: 300px;
+    position: relative;
+    z-index: -5;
+    background-color: rgb(0, 254, 178);
+
+  }
+
+  #root2 {
+    width: 50px;
+    height: 100px;
+    position: absolute;
+    z-index: -1;
+    top: 100px;
+    background-color: rgb(224, 240, 53);
+
+  } */
 </style>
 
 <body>
-  <div id="root"></div>
+  <div id="root" onclick="console.log(1)">
+<!-- 
+    11
+    <div id="root1">
+      <span onclick="console.log(2)">2</span>
+
+    </div>
+    <div id="root2">
+      <span onclick="console.log(3)">2</span>
+    </div> -->
+  </div>
+
 </body>
 
 </html>

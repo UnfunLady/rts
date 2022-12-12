@@ -159,7 +159,7 @@ export const getGroupByEdit = async (data: editGroupInit, setData: Function, dno
 }
 // 修改小组数据
 export const updateGroupInfo = async (data: {
-    id: number | string, deptname: number | string, location: string, count: number | string
+    id: number | string, deptname: number | string, location: string, count: number | string,updateName:boolean|null
 }) => {
     const res: any = await department.reqUpdateGroupInfo(data);
     if (res.code === 200) {

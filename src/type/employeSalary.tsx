@@ -27,8 +27,8 @@ type departmentDataType = {
         groupInfo: [],
         isLoading: boolean,
         editForm: {
-            isuse: string | boolean,
-            deptid: string | number,
+            isuse: string | boolean|null,
+            deptid: string | number|null,
         },
         performance: {
             deptid: string | number,
@@ -44,8 +44,8 @@ export class initDepartmentData {
             groupInfo: [],
             isLoading: false,
             editForm: {
-                isuse: '',
-                deptid: 0
+                isuse: null,
+                deptid: null
             },
             performance: {
                 deptid: 0,
@@ -59,7 +59,12 @@ export class initDepartmentData {
 export const getEmployeSalaryInfo = async (data: initDepartmentData, setData: Function) => {
     const res: any = await employe.reqGetSalaryInfo({ dno: data.initDepartmentData.employeSalaryForm.dno })
     if (res.code === 200) {
-        data.initDepartmentData.employeSalaryForm.groupInfo = res.groupInfo;
+        // 合并薪资信息
+        const groupInfo = res.salaryInfo.map((item:any, index:any) => {
+            return { ...item, ...res.deptInfo[index] };
+        });
+
+        data.initDepartmentData.employeSalaryForm.groupInfo = groupInfo;
         setData({ ...data })
         data.initDepartmentData.tableDatas = data.initDepartmentData.employeSalaryForm.groupInfo.map((group: any) => {
             return {
@@ -83,6 +88,13 @@ export const getEmployeSalaryInfo = async (data: initDepartmentData, setData: Fu
 }
 // 修改部门绩效
 export const updateEmployeSalaryInfo = async (data: initDepartmentData, setData: Function) => {
+    const obj={
+        editIsuse:data.initDepartmentData.employeSalaryForm.editForm.isuse,
+        editIsuseId:data.initDepartmentData.employeSalaryForm.editForm.deptid,
+        performanceId:data.initDepartmentData.employeSalaryForm.performance.deptid,
+        performance:data.initDepartmentData.employeSalaryForm.performance.performance
+    }
+    
     const res: any = await employe.reqUpdateSalaryInfo(data.initDepartmentData.employeSalaryForm);
     if (res && res.code === 200) {
         // 重置修改表单

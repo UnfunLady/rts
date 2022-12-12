@@ -35,15 +35,30 @@ const EditGroup = (props: {
 
     const confirmEditGroup = () => {
         editForm.validateFields().then(async (res) => {
-            const updateInfo = {
-                id: data.editData.editInfo.id,
-                deptname: res.deptname,
-                location: res.location,
-                count: res.count
+            console.log(data.editData.editInfo.deptname, res.deptname);
+
+            let updateInfo;
+            if (data.editData.editInfo.deptname != res.deptname) {
+                updateInfo = {
+                    id: data.editData.editInfo.id,
+                    deptname: res.deptname,
+                    location: res.location,
+                    count: res.count,
+                    updateName: true
+                }
+            } else {
+                updateInfo = {
+                    id: data.editData.editInfo.id,
+                    deptname: res.deptname,
+                    location: res.location,
+                    count: res.count,
+                    updateName: false
+                }
             }
             const success = await updateGroupInfo(updateInfo)
+
             if (success) {
-                
+                // data.editData.editInfo.deptname=editForm.getFieldValue("deptname");
             }
         }).catch(() => {
             message.error('请按要求输入数据')
