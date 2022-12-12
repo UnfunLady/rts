@@ -78,3 +78,26 @@ export const updatePassword = async (data: object) => {
         return false
     }
 }
+
+//修改信息有头像
+export const updateUserInfo = async (params: object) => {
+    const res: any = await loginView.editUserInfo(params);
+    console.log(res);
+
+    if (res && res.code === 200) {
+        return true;
+    } else {
+        message.error('修改信息失败')
+        return false
+    }
+}
+//修改信息无头像
+export const updateUserInfoNoAvatar = async (params: object) => {
+    const res: any = await loginView.editUserInfoNoAvatar(params);
+    if (res && res.code === 200) {
+        return true;
+    } else {
+        message.error('修改信息失败')
+        return false
+    }
+}

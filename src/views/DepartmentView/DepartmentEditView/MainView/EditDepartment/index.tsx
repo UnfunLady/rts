@@ -50,15 +50,15 @@ export default function EditDepartment(props: propsType) {
     const beforeUpload = (file: RcFile) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
-            message.error('You can only upload JPG/PNG file!');
+            message.error('只能上传 JPG/PNG 文件!');
         }
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
-            message.error('Image must smaller than 2MB!');
+            message.error('图片大小必须小于 2MB!');
             return false;
         }
-   
-            
+
+
         return false;
     };
 
@@ -99,8 +99,9 @@ export default function EditDepartment(props: propsType) {
                 if (res.upload.fileList.length > 0) {
                     const formData = new FormData();
                     fileList.forEach(file => {
+                        // 
                         formData.append('file', file.originFileObj as File);
-               
+
                     });
                     // 把要用的信息也添加进去
                     // formData.append('base64', imageUrl)
@@ -116,7 +117,6 @@ export default function EditDepartment(props: propsType) {
                     if (dname === editGroupForm.getFieldValue('dname')) {
                         formData.append('notName', "true")
                     }
-        
                     const success = await updateHasAva(formData)
                     if (success) {
                         // todo  pubsub  设置edit为false  显示show组件

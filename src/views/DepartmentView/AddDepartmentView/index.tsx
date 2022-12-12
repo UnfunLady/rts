@@ -63,6 +63,7 @@ export default function AddDepartmentView() {
     }
     const resetForm = () => {
         addDepartmentForm.resetFields()
+        setFileList([])
     }
     // 确认提交
     const confirmAdd = () => {

@@ -1,5 +1,5 @@
 import { Navigate, } from 'react-router-dom'
-import { MenuOutlined, SolutionOutlined, IssuesCloseOutlined, UserSwitchOutlined, SafetyOutlined, AreaChartOutlined, InsuranceOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
+import { MenuOutlined, SolutionOutlined, IssuesCloseOutlined, HighlightOutlined, UserSwitchOutlined, SafetyOutlined, AreaChartOutlined, InsuranceOutlined, HomeOutlined, BlockOutlined, DatabaseOutlined, MoneyCollectOutlined, AppstoreOutlined, UserOutlined, TeamOutlined, DeleteOutlined } from '@ant-design/icons';
 import HomeView from '../views/HomeView'
 import MainView from '../views/MainView'
 import EmployeView from '../views/EmployeView'
@@ -23,7 +23,8 @@ import LoginView from '../views/LoginView';
 import NotFound from '../component/404NotFoundView';
 import RecoverEmploye from '../views/RecoverEmploye';
 import RecoverGroup from '../views/RecoverGroup';
-
+import Attendance from '../views/AttendanceView'
+import EmployeAttendance from '../views/AttendanceView/employeAttendanceControl'
 const routes: any = [
     //重定向
     {
@@ -86,6 +87,18 @@ const routes: any = [
             </>
         ),
     },
+    {
+        path: '/homeView/attendanceView',
+        show: false,
+        auth: true,
+        element: (
+            <>
+                <Navigate to="/homeView/attendanceView/employeAttendance" />
+            </>
+        ),
+    },
+
+
     //------------------------------------
     {
         path: '/homeView',
@@ -302,6 +315,28 @@ const routes: any = [
                 ]
             },
             {
+                path: 'attendanceView',
+                absolutePath: '/homeView/attendanceView',
+                element: <Attendance />,
+                title: '考勤管理',
+                breadcrumbName: '考勤管理',
+                icon: <HighlightOutlined />,
+                show: true,
+                auth: true,
+                children: [
+                    {
+                        path: 'employeAttendance',
+                        absolutePath: '/homeView/attendanceView/employeAttendance',
+                        element: <EmployeAttendance />,
+                        icon: <UserOutlined />,
+                        title: '员工请假审批',
+                        breadcrumbName: '员工请假审批',
+                        show: true,
+                        auth: true,
+                    }
+                ]
+            },
+            {
                 path: 'recoverEmploye',
                 absolutePath: '/homeView/recoverEmploye',
                 element: <RecoverEmploye />,
@@ -354,6 +389,8 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/employeView/employeSalary/salaryIndexView': '全部信息',
     '/homeView/employeView/employeSalary/departmentSalaryDetail': '部门薪资信息',
     '/homeView/employeView/employeSalary/employeDetailView': '部门员工薪资信息',
+    '/homeView/department/deleteDepartmentView': '解散部门或小组',
+    '/homeView/department/deleteDepartmentView/mainView': '部门删除管理',
     '/homeView/department': '部门菜单',
     '/homeView/department/departmentView': '现有部门信息',
     '/homeView/department/departmentView/editGroup': '修改小组信息',
@@ -366,5 +403,7 @@ export const breadcrumbNameMap: Record<string, string> = {
     '/homeView/evilControl/chinaMap': '全国疫情地图',
     '/homeView/recoverEmploye': '恢复员工',
     '/homeView/recoverGroup': '恢复小组',
+    '/homeView/attendanceView': '考勤管理',
+    '/homeView/attendanceView/employeAttendance': '员工请假审批',
 };
 export default routes

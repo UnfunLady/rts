@@ -7,7 +7,7 @@ import { useLocation, useNavigate, Outlet, Link } from 'react-router-dom';
 import { Layout, Col, Row, Dropdown, Breadcrumb, Button, Menu, Avatar, message, Modal, Form, Tag, Input, Upload } from 'antd';
 // 引入type数据
 import type { MenuProps } from 'antd'
-import { mainViewDataInit, getMenuNodes, updatePassword } from '../../type/mainView';
+import { mainViewDataInit, getMenuNodes, updatePassword, updateUserInfo, updateUserInfoNoAvatar } from '../../type/mainView';
 import { MenuFoldOutlined, MenuUnfoldOutlined, DownOutlined, PlusOutlined, LoadingOutlined, CheckOutlined } from '@ant-design/icons';
 import './index.less'
 import { breadcrumbNameMap } from '../../router';
@@ -15,6 +15,7 @@ import PubSub from 'pubsub-js'
 import RouterBeforeEach from '../../util/RouterBeforeEach';
 import { useDispatch, useSelector } from 'react-redux';
 import { USEROUT } from '../../store/constant';
+import { userOut } from '../../store/actions/user';
 import { useForm } from 'antd/es/form/Form';
 import { RcFile, UploadFile, UploadProps } from 'antd/lib/upload';
 const { Header, Sider, Content } = Layout;
@@ -183,6 +184,7 @@ const MainView = (props: Props) => {
     const [imageUrl, setImageUrl] = useState<any>(userInfo.avatar);
     const [fileList, setFileList] = useState<UploadFile[]>([
     ]);
+    const [isUploadAvatar, setUploadAvatar] = useState(false)
     const [openImg, setOpenImg] = useState(false)
     // 取消修改
     const cancelUpdatePwd = () => {
@@ -194,10 +196,8 @@ const MainView = (props: Props) => {
         updatePwdForm.validateFields().then(async res => {
             if (res.confirmNewPwd === res.newPwd) {
                 const updateSuccess = await updatePassword({
-                    editInfo: {
-                        nowPassword: res.nowPwd,
-                        newPassword: res.newPwd,
-                    },
+                    nowPassword: res.nowPwd,
+                    newPassword: res.newPwd,
                     user: userInfo.username
                 })
                 if (updateSuccess) {
@@ -229,15 +229,11 @@ const MainView = (props: Props) => {
             },])
         updateUserForm.setFieldValue("newUsername", userInfo.nickname)
     }
-    const cancelEdit = () => {
-        setShowEdit(false)
-        updateUserForm.resetFields()
-        setFileList([])
-    }
     const cancelEditInfo = () => {
         setShowEdit(false)
         updateUserForm.resetFields()
         setFileList([])
+        setLoading(false)
     }
     // 头像相关
     // 图片转码
@@ -265,8 +261,6 @@ const MainView = (props: Props) => {
 
         return false;
     };
-
-
     // 图片状态改变时
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         if (newFileList && newFileList.length > 0) {
@@ -274,8 +268,13 @@ const MainView = (props: Props) => {
             getBase64(newFileList[0].originFileObj as RcFile, url => {
                 setImageUrl(url)
             })
+            setUploadAvatar(true)
             setFileList(newFileList);
+
+        } else {
+            setUploadAvatar(false)
         }
+
     };
 
     // upload按钮样式
@@ -292,11 +291,13 @@ const MainView = (props: Props) => {
     // 删除
     const removeImg = () => {
         setFileList([])
+        setUploadAvatar(false)
+
     }
     // 提交修改
     const confirmUpload = async () => {
         const lengthFile = updateUserForm.getFieldValue('newAvatar');
-        if (lengthFile && lengthFile.length !== 0) {
+        if (lengthFile && lengthFile.length !== 0 && isUploadAvatar) {
             setLoading(true)
             updateUserForm.validateFields().then(async (res) => {
                 if (res.newAvatar.fileList.length > 0) {
@@ -305,9 +306,33 @@ const MainView = (props: Props) => {
                         formData.append('file', file.originFileObj as File);
                     });
                     formData.append('nickname', updateUserForm.getFieldValue('newUsername'))
+                    formData.append('username', userInfo.username);
                     // 发请求
+                    const res = await updateUserInfo(formData);
+                    if (res) {
+                        message.success("修改用户信息成功！请重新登录")
+                        setLoading(false)
+                        cancelEditInfo()
+                        dispatch(userOut({}))
+                        navitage('/loginView')
+                    }
+
                 }
             })
+        } else {
+            // 无头像修改
+            // 发请求
+            const res = await updateUserInfoNoAvatar({
+                nickname: updateUserForm.getFieldValue('newUsername'),
+                username: userInfo.username
+            });
+            if (res) {
+                message.success("修改用户信息成功！请重新登录")
+                setLoading(false)
+                cancelEditInfo()
+                dispatch(userOut({}))
+                navitage('/loginView')
+            }
         }
     }
 
@@ -394,7 +419,7 @@ const MainView = (props: Props) => {
                 </Form>
             </Modal>
             {/* 修改个人信息 */}
-            <Modal open={showEdit} onCancel={cancelEdit} title="修改个人信息" width={700} footer={
+            <Modal open={showEdit} onCancel={cancelEditInfo} title="修改个人信息" width={700} footer={
                 <div>
                     <Button type='primary' onClick={cancelEditInfo}>取消修改</Button>
                     <Button type='primary' onClick={confirmUpload}>确认修改</Button>
